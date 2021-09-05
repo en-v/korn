@@ -9,41 +9,41 @@ import (
 	"github.com/en-v/reactor/core"
 )
 
-type Tree struct {
-	root       *Tree
+type Snapshot struct {
+	parent     *Snapshot
 	origin     Thing
 	name       string
-	leafs      map[string]*Leaf
-	branches   map[string]*Tree
+	fields     map[string]*Field
+	branches   map[string]*Snapshot
 	diffsStack map[string]bool
 }
 
-type Leaf struct {
+type Field struct {
 	Value    interface{}
 	Kind     reflect.Kind
 	Reaction string
 }
 
-func MakeTree(thing Thing) (*Tree, error) {
-	tree, err := makeTree(thing, nil, thing.Key())
+func MakeSnapshot(thing Thing) (*Snapshot, error) {
+	shot, err := snapshot(thing, nil, thing.Key())
 	if err != nil {
 		return nil, err
 	}
-	tree.origin = thing
-	return tree, nil
+	shot.origin = thing
+	return shot, nil
 }
 
-func makeTree(thing interface{}, root *Tree, name string) (*Tree, error) {
+func snapshot(thing interface{}, parent *Snapshot, name string) (*Snapshot, error) {
 
 	if thing == nil {
 		return nil, errors.New("Something is NIL")
 	}
 
-	tree := &Tree{
-		root:     root,
+	shot := &Snapshot{
+		parent:   parent,
 		name:     name,
-		leafs:    make(map[string]*Leaf),
-		branches: make(map[string]*Tree),
+		fields:   make(map[string]*Field),
+		branches: make(map[string]*Snapshot),
 	}
 
 	svalue := reflect.Indirect(reflect.ValueOf(thing))
@@ -53,30 +53,30 @@ func makeTree(thing interface{}, root *Tree, name string) (*Tree, error) {
 
 		fvalue := svalue.Field(f)
 		fstruct := stype.Field(f)
-		reacTag, tagExists := fstruct.Tag.Lookup(core.TAG)
+		tag, tagexists := fstruct.Tag.Lookup(core.TAG)
 
 		if fstruct.Type.Kind() == reflect.Struct {
-			subTree, err := makeTree(fvalue.Interface(), tree, fstruct.Name)
+			subTree, err := snapshot(fvalue.Interface(), shot, fstruct.Name)
 			if err != nil {
 				return nil, err
 			}
-			tree.branches[fstruct.Name] = subTree
+			shot.branches[fstruct.Name] = subTree
 			continue
 		}
 
-		if tagExists {
-			tree.leafs[fstruct.Name] = &Leaf{
+		if tagexists {
+			shot.fields[fstruct.Name] = &Field{
 				Value:    fvalue.Interface(),
 				Kind:     fvalue.Kind(),
-				Reaction: reacTag,
+				Reaction: tag,
 			}
 		}
 	}
 
-	return tree, nil
+	return shot, nil
 }
 
-func (this *Tree) ToString() string {
+func (this *Snapshot) ToString() string {
 	b, err := json.MarshalIndent(this, "", "   ")
 	if err != nil {
 		return err.Error()
@@ -84,11 +84,11 @@ func (this *Tree) ToString() string {
 	return string(b)
 }
 
-func (this *Tree) DiffExist() bool {
+func (this *Snapshot) DiffExist() bool {
 	return len(this.diffsStack) > 0
 }
 
-func (this *Tree) PullDiff() string {
+func (this *Snapshot) PullDiff() string {
 	for key := range this.diffsStack {
 		delete(this.diffsStack, key)
 		return key
@@ -96,19 +96,19 @@ func (this *Tree) PullDiff() string {
 	return ""
 }
 
-func (this *Tree) GetRoute() string {
-	if this.root == nil {
+func (this *Snapshot) GetRoute() string {
+	if this.parent == nil {
 		return this.name
 	}
 
-	if this.root.GetRoute() != "" {
-		return this.root.GetRoute() + "." + this.name
+	if this.parent.GetRoute() != "" {
+		return this.parent.GetRoute() + "." + this.name
 	}
 
 	return this.name
 }
 
-func (this *Tree) Compare() error {
+func (this *Snapshot) Compare() error {
 
 	if this.diffsStack == nil {
 		this.diffsStack = make(map[string]bool)
@@ -118,7 +118,7 @@ func (this *Tree) Compare() error {
 		}
 	}
 
-	new, err := MakeTree(this.origin)
+	new, err := MakeSnapshot(this.origin)
 	if err != nil {
 		return err
 	}
@@ -129,17 +129,17 @@ func (this *Tree) Compare() error {
 	}
 
 	this.branches = new.branches
-	this.leafs = new.leafs
+	this.fields = new.fields
 	if len(this.diffsStack) > 0 {
 		log.Debug(this.name, "Differents found", this.diffsStack)
 	}
 	return nil
 }
 
-func (this *Tree) compare(diffsOut map[string]bool, new *Tree) error {
-	for name, leaf := range this.leafs {
-		if leaf.Value != new.leafs[name].Value {
-			log.Debug(leaf.Value, new.leafs[name].Value)
+func (this *Snapshot) compare(diffsOut map[string]bool, new *Snapshot) error {
+	for name, leaf := range this.fields {
+		if leaf.Value != new.fields[name].Value {
+			log.Debug(leaf.Value, new.fields[name].Value)
 			diffsOut[leaf.Reaction] = true
 		}
 	}
@@ -154,10 +154,10 @@ func (this *Tree) compare(diffsOut map[string]bool, new *Tree) error {
 	return nil
 }
 
-func (this *Tree) GetOrigin() Thing {
+func (this *Snapshot) GetOrigin() Thing {
 	return this.origin
 }
 
-func (this *Tree) Name() string {
+func (this *Snapshot) Name() string {
 	return this.name
 }

@@ -6,13 +6,12 @@ import (
 
 	"github.com/en-v/log"
 	"github.com/en-v/reactor"
-	"github.com/en-v/reactor/observer"
 	"github.com/en-v/reactor/types"
 )
 
 func main() {
 
-	rch := make(chan int)
+	wait := make(chan int)
 
 	size := 10000
 	objs := make([]*SomeType, size)
@@ -21,31 +20,35 @@ func main() {
 
 	}
 
-	observer := observer.New("demo-observer")
-	observer.ManualMode() // also can observer.LazyMode() - expensive mode, but no need to invoke React() methond on the Thing
+	// 1st step - create an Observer
+	obs := reactor.Observer("demo-observer")
+	obs.ManualMode() // or observer.LazyMode()
 
-	observer.On("someFieldChange", handlerOne)
-	observer.On("subDisabled", handlerTwo)
+	// 2nd step - adding handlers to observer
+	obs.On("someFieldChange", handlerOne)
+	obs.On("subDisabled", handlerTwo)
 
-	err := observer.Capture(objs) // can capture - slice, map or single
+	// 3rd step - capturing targets, can capture - slice, array, map or single
+	err := obs.Capture(objs)
 	if err != nil {
 		panic(err)
 	}
 
-	reactor := reactor.New()
-	err = reactor.Add(observer)
+	// finally - create reacorm add observer and activare reactor
+	tor := reactor.New()
+	err = tor.Add(obs)
 	if err != nil {
 		panic(err)
 	}
 
-	err = reactor.Activate()
+	err = tor.Activate()
 	if err != nil {
 		panic(err)
 	}
 
 	go modify(objs)
 
-	<-rch
+	<-wait
 }
 
 func handlerOne(obj interface{}) {

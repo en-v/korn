@@ -17,7 +17,7 @@ type Observer struct {
 	enabled bool
 
 	reactions map[string]*types.Reaction
-	things    map[string]*types.Tree
+	things    map[string]*types.Snapshot
 
 	originsSlice []interface{}
 	originsMap   map[string]interface{}

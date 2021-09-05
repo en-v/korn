@@ -25,11 +25,11 @@ func (this *Observer) Capture(things interface{}) error {
 		this.originsSlice[0] = value.Interface()
 		this.originsMap = nil
 
-		this.things = make(map[string]*types.Tree, 1)
+		this.things = make(map[string]*types.Snapshot, 1)
 
 		item := value.Interface().(types.Thing)
 		item.Observe(this)
-		this.things[item.Key()], err = types.MakeTree(item)
+		this.things[item.Key()], err = types.MakeSnapshot(item)
 		if err != nil {
 			return errors.Wrap(err, "Single Captured")
 		}
@@ -41,11 +41,11 @@ func (this *Observer) Capture(things interface{}) error {
 		}
 		this.originsMap = nil
 
-		this.things = make(map[string]*types.Tree, len(this.originsSlice))
+		this.things = make(map[string]*types.Snapshot, len(this.originsSlice))
 		for _, item := range this.originsSlice {
 			item := item.(types.Thing)
 			item.Observe(this)
-			this.things[item.Key()], err = types.MakeTree(item)
+			this.things[item.Key()], err = types.MakeSnapshot(item)
 			if err != nil {
 				return errors.Wrap(err, "Slice Captured")
 			}
@@ -60,11 +60,11 @@ func (this *Observer) Capture(things interface{}) error {
 		}
 		this.originsSlice = nil
 
-		this.things = make(map[string]*types.Tree, len(this.originsMap))
+		this.things = make(map[string]*types.Snapshot, len(this.originsMap))
 		for key, item := range this.originsMap {
 			item := item.(types.Thing)
 			item.Observe(this)
-			this.things[key], err = types.MakeTree(item)
+			this.things[key], err = types.MakeSnapshot(item)
 			if err != nil {
 				return errors.Wrap(err, "Map Captured")
 			}

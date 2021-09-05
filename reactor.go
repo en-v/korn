@@ -19,6 +19,11 @@ func New() *Reactor {
 	}
 }
 
+//Observer - create a new named instance of Observer
+func Observer(name string) *observer.Observer {
+	return observer.New(name)
+}
+
 //Add - add an observer ot the reactor
 func (this Reactor) Add(observer *observer.Observer) error {
 	_, exists := this.observers[observer.Name()]

@@ -28,7 +28,7 @@ func (this *Observer) observe() {
 	}
 }
 
-func (this *Observer) checkThing(thingTree *types.Tree) {
+func (this *Observer) checkThing(thingTree *types.Snapshot) {
 	err := thingTree.Compare()
 	if err != nil {
 		log.Error(err, thingTree.Name())
