@@ -14,29 +14,29 @@ func main() {
 
 func singleContainer() {
 
-	// create reactor kit (Reactor and first Container), also you can use "New" for an empty reactor create
-	rtor, first := reactor.Kit("single")
+	// create reactor kit (Reactor and cont Container), also you can use "New" for an empty reactor create
+	rtor, cont := reactor.Kit("single")
 	// adding handlers to the container
-	first.On("add", universalHandler)
-	first.On("remove", universalHandler)
-	first.On("string-changed", universalHandler)
-	first.On("int-changed", universalHandler)
-	first.On("struct-enabled-changed", universalHandler)
-	first.On("struct-slice-changed", universalHandler)
-	first.On("struct-map-string-changed", universalHandler)
-	first.On("struct-map-int-changed", universalHandler)
+	cont.On("add", universalHandler)
+	cont.On("remove", universalHandler)
+	cont.On("string-changed", universalHandler)
+	cont.On("int-changed", universalHandler)
+	cont.On("struct-enabled-changed", universalHandler)
+	cont.On("struct-slice-changed", universalHandler)
+	cont.On("struct-map-string-changed", universalHandler)
+	cont.On("struct-map-int-changed", universalHandler)
 
 	// capture targets (map or single) and activate reactor
 	targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
-	err(first.Capture(targets))
+	err(cont.Capture(targets))
 	err(rtor.Activate())
 
 	// to modificate targets and look at results
-	modify(first.Get("1").(*Type))
+	modify(cont.Get("1").(*Type))
 	modify(targets["4"])
-	err(first.Remove("2"))
-	err(first.Capture(new("5")))
-	modify(first.Get("1").(*Type))
+	err(cont.Remove("2"))
+	err(cont.Capture(new("5")))
+	modify(cont.Get("1").(*Type))
 }
 
 func multipleContainers() {

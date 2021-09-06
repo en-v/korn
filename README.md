@@ -7,39 +7,28 @@ A reactivity framework for Go
 Full example's code in ./examples/example.go
 
 ```go
-// 1st step - create an Container
-obs := reactor.Container("demo-container")
-obs.ManualMode() // or container.LazyMode()
+// create reactor kit (Reactor and first Container), also you can use "New" for an empty reactor create
+rtor, cont := reactor.Kit("single")
 
-// 2nd step - adding handlers to container
-obs.On("someFieldChange", handlerOne)
-obs.On("subDisabled", handlerTwo)
+// adding handlers to the container
+cont.On("add", universalHandler)
+cont.On("remove", universalHandler)
+cont.On("string-changed", universalHandler)
+cont.On("int-changed", universalHandler)
+cont.On("struct-enabled-changed", universalHandler)
+cont.On("struct-slice-changed", universalHandler)
+cont.On("struct-map-string-changed", universalHandler)
+cont.On("struct-map-int-changed", universalHandler)
 
-// 3rd step - capturing targets, can capture - slice, array, map or single
-err := obs.Capture(objs)
-// ... error handling
+// capture targets (map or single) and activate reactor
+targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
+cont.Capture(targets)
+rtor.Activate()
 
-// finally - create reacorm add container and activare reactor
-tor := reactor.New()
-err = tor.Add(obs)
-// ... error handling
-err = tor.Activate()
-// ... error handling
-```
-
-And after
-
-```go
-objs[1].SomeField = "NEW_VAL"
-objs[1].IntVal = 144
-objs[1].Sub2.Enabled = true
-objs[1].React() // no need to call it in the lazy mode
-
-//OR 
-
-obj := bjs[1]
-obj.IntVal = 144
-obj.Sub2.Enabled = true
-obj.React() // no need to call it in the lazy mode
-
+// to modificate targets and look at results
+modify(cont.Get("1").(*Type))
+modify(targets["4"])
+cont.Remove("2"))
+cont.Capture(new("5")))
+modify(cont.Get("1").(*Type))
 ```
