@@ -1,123 +1,138 @@
 package main
 
 import (
-	"strconv"
-	"time"
-
 	"github.com/en-v/log"
 	"github.com/en-v/reactor"
-	"github.com/en-v/reactor/types"
+	"github.com/en-v/reactor/event"
 )
 
 func main() {
+	singleContainer()
+	//multipleContainers()
+	//withErrorCapturing()
+}
 
-	wait := make(chan int)
+func singleContainer() {
 
-	size := 10000
-	objs := make([]*SomeType, size)
-	for i := 0; i < size; i++ {
-		objs[i] = newThing(strconv.Itoa(i))
+	// create reactor kit (Reactor and first Container), also you can use "New" for an empty reactor create
+	rtor, first := reactor.Kit("single")
+	// adding handlers to the container
+	first.On("add", universalHandler)
+	first.On("remove", universalHandler)
+	first.On("string-changed", universalHandler)
+	first.On("int-changed", universalHandler)
+	first.On("struct-enabled-changed", universalHandler)
+	first.On("struct-slice-changed", universalHandler)
+	first.On("struct-map-string-changed", universalHandler)
+	first.On("struct-map-int-changed", universalHandler)
 
-	}
+	// capture targets (map or single) and activate reactor
+	targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
+	err(first.Capture(targets))
+	err(rtor.Activate())
 
-	// 1st step - create an Observer
-	obs := reactor.Observer("demo-observer")
-	obs.ManualMode() // or observer.LazyMode()
+	// to modificate targets and look at results
+	modify(first.Get("1").(*Type))
+	modify(targets["4"])
+	err(first.Remove("2"))
+	err(first.Capture(new("5")))
+	modify(first.Get("1").(*Type))
+}
 
-	// 2nd step - adding handlers to observer
-	obs.On("someFieldChange", handlerOne)
-	obs.On("subDisabled", handlerTwo)
+func multipleContainers() {
 
-	// 3rd step - capturing targets, can capture - slice, array, map or single
-	err := obs.Capture(objs)
+	// create reactor kit (Reactor and first Container), also you can use "New" for an empty reactor create
+	rtor, first := reactor.Kit("first")
+	second := rtor.Container("second")
+	// adding handlers to the container
+	first.On("add", universalHandler)
+	first.On("remove", universalHandler)
+	first.On("string-changed", universalHandler)
+	first.On("int-changed", universalHandler)
+	first.On("struct-enabled-changed", universalHandler)
+	first.On("struct-slice-changed", universalHandler)
+	first.On("struct-map-string-changed", universalHandler)
+	first.On("struct-map-int-changed", universalHandler)
+
+	second.On("add", universalHandler)
+	second.On("remove", universalHandler)
+	second.On("string-changed", universalHandler)
+	second.On("int-changed", universalHandler)
+
+	// capture targets (map or single) and activate reactor
+	err(first.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
+	err(second.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
+	err(rtor.Activate())
+
+	// to modificate targets and look at results
+	modify(first.Get("1").(*Type))
+	err(first.Remove("2"))
+	err(second.Remove("2"))
+	err(first.Capture(new("5")))
+	modify(first.Get("1").(*Type))
+}
+
+func withErrorCapturing() {
+
+}
+
+func err(err error) {
 	if err != nil {
 		panic(err)
 	}
-
-	// finally - create reacorm add observer and activare reactor
-	tor := reactor.New()
-	err = tor.Add(obs)
-	if err != nil {
-		panic(err)
-	}
-
-	err = tor.Activate()
-	if err != nil {
-		panic(err)
-	}
-
-	go modify(objs)
-
-	<-wait
 }
 
-func handlerOne(obj interface{}) {
-	c := obj.(*SomeType)
-	log.Debug("You see this text cos the field has changed", c.Key())
+func universalHandler(event *event.Event) {
+	log.Debugw(event.Kind, "Field", event.Name, "Old", event.Old, "New", event.New, "Container", event.Container, "Path", event.Path)
 }
 
-func handlerTwo(obj interface{}) {
-	c := obj.(*SomeType)
-	log.Debug("You see this text cos the field has changed", c.Key())
-}
-
-func modify(arr []*SomeType) {
-	time.Sleep(time.Second * 5)
-	log.Debug("SET NEW VALUE")
-	arr[1].SomeField = "NEW_VAL"
-	arr[1].IntVal = 144
-	arr[1].Sub2.Enabled = true
-	arr[1].React()
+func modify(t *Type) {
+	t.String = "NEW_VAL"
+	t.Int = 2
+	t.Struct.Enabled = false
+	t.Struct.MapString["zero"] = 0
+	t.Struct.MapInt[0] = 0
+	t.Struct.Slice[0] = "zero"
+	t.Foo = 6.77
+	t.React()
 }
 
 // ##################################################################
 
-type SomeType struct {
-	types.Injection
-	id         string
-	SomeField  string `react:"someFieldChange"`
-	IntVal     int    `react:"setIntVal"`
-	SomeField1 string `react:"someFieldChange"`
-	IntVal1    int    `react:"setIntVal"`
-	SomeField2 string `react:"someFieldChange"`
-	IntVal2    int    `react:"setIntVal"`
-	Sub        Sub
-	Sub2       Sub
-	Sub3       Sub
-	Sub4       Sub
-	Sub5       Sub
+type Type struct {
+	reactor.Jet
+	String string `react:"string-changed"`
+	Int    int    `react:"int-changed"`
+	Foo    float32
+	Struct Struct
 }
 
-type Sub struct {
-	SubField   string `react:"subFieldChange"`
-	Enabled    bool   `react:"subDisabled"`
-	SubField1  string `react:"subFieldChange"`
-	Enabled1   bool   `react:"subDisabled"`
-	SubField2  string `react:"subFieldChange"`
-	Enabled2   bool   `react:"subDisabled"`
-	SubField3  string `react:"subFieldChange"`
-	Enabled3   bool   `react:"subDisabled"`
-	SubField11 string `react:"subFieldChange"`
-	Enabled11  bool   `react:"subDisabled"`
-	SubField12 string `react:"subFieldChange"`
-	Enabled12  bool   `react:"subDisabled"`
-	SubField13 string `react:"subFieldChange"`
-	Enabled13  bool   `react:"subDisabled"`
+type Struct struct {
+	Enabled   bool           `react:"struct-enabled-changed"`
+	Slice     []string       `react:"struct-slice-changed"`
+	MapString map[string]int `react:"struct-map-string-changed"`
+	MapInt    map[int]int    `react:"struct-map-int-changed"`
 }
 
-func newThing(id string) *SomeType {
-	t := &SomeType{
-		id:        id,
-		SomeField: "fv." + id,
-		Sub: Sub{
-			SubField: "sysyss",
+func new(id string) *Type {
+	t := &Type{
+		String: id,
+		Int:    1,
+		Foo:    1.56,
+		Struct: Struct{
+			Enabled: true,
+			Slice:   []string{"one", "two", "three"},
+			MapString: map[string]int{
+				"uno":   1,
+				"do":    2,
+				"stres": 3,
+			},
+			MapInt: map[int]int{
+				1: 1,
+				2: 2,
+			},
 		},
 	}
-	t.SetKey(t.id)
+	t.SetKey(id) // required
 	return t
-}
-
-func (this *SomeType) Clone() types.Thing {
-	n := *this
-	return &n
 }

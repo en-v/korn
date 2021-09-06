@@ -7,11 +7,11 @@ A reactivity framework for Go
 Full example's code in ./examples/example.go
 
 ```go
-// 1st step - create an Observer
-obs := reactor.Observer("demo-observer")
-obs.ManualMode() // or observer.LazyMode()
+// 1st step - create an Container
+obs := reactor.Container("demo-container")
+obs.ManualMode() // or container.LazyMode()
 
-// 2nd step - adding handlers to observer
+// 2nd step - adding handlers to container
 obs.On("someFieldChange", handlerOne)
 obs.On("subDisabled", handlerTwo)
 
@@ -19,7 +19,7 @@ obs.On("subDisabled", handlerTwo)
 err := obs.Capture(objs)
 // ... error handling
 
-// finally - create reacorm add observer and activare reactor
+// finally - create reacorm add container and activare reactor
 tor := reactor.New()
 err = tor.Add(obs)
 // ... error handling

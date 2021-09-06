@@ -3,66 +3,69 @@ package reactor
 import (
 	"fmt"
 
-	"github.com/en-v/reactor/observer"
+	"github.com/en-v/reactor/container"
 	"github.com/pkg/errors"
 )
 
+//IReactor - reactivity framework for Go
+type IReactor interface {
+	//Active - activate the reactor instance
+	Activate() error
+	//Shutdown - deactivate the reactor instance
+	Shutdown()
+	//MakeContainer - get an container, if an container is not found than make a new named container
+	Container(string) container.IContainer
+}
+
 //Reactor - reactivity framework for Go
-type Reactor struct {
-	observers map[string]*observer.Observer
+type _Reactor struct {
+	containers map[string]container.IContainer
 }
 
 //New - create a new Reactor instance
-func New() *Reactor {
-	return &Reactor{
-		observers: make(map[string]*observer.Observer),
+func New() IReactor {
+	r := &_Reactor{
+		containers: make(map[string]container.IContainer),
 	}
+	return IReactor(r)
 }
 
-//Observer - create a new named instance of Observer
-func Observer(name string) *observer.Observer {
-	return observer.New(name)
+func Kit(name string) (IReactor, container.IContainer) {
+	rct := New()
+	obs := rct.Container(name)
+	return rct, obs
 }
 
-//Add - add an observer ot the reactor
-func (this Reactor) Add(observer *observer.Observer) error {
-	_, exists := this.observers[observer.Name()]
+//Container - create a new named instance of Container
+func (this *_Reactor) Container(name string) container.IContainer {
+	obs, exists := this.containers[name]
 	if exists {
-		return errors.New("Observer with current name alredy exists, name = " + observer.Name())
-	}
-	this.observers[observer.Name()] = observer
-	return nil
-}
-
-//Get - get an observer by name
-func (this Reactor) Get(name string) (*observer.Observer, error) {
-	observer, exists := this.observers[name]
-	if !exists {
-		return nil, errors.New("Observer with current name is not found, name = " + name)
+		return obs
 	}
 
-	return observer, nil
+	this.containers[name] = container.Make(name)
+	return this.containers[name]
 }
 
 //Active - activate the reactor instance
-func (this *Reactor) Activate() error {
-	if len(this.observers) == 0 {
-		return errors.New("No observers found")
+func (this *_Reactor) Activate() error {
+	if len(this.containers) == 0 {
+		return errors.New("No containers found")
 	}
 
-	for name, obs := range this.observers {
+	for name, obs := range this.containers {
 		err := obs.Activate()
 		if err != nil {
 			go this.Shutdown()
-			return errors.Wrap(err, fmt.Sprintf("Observer('%s').Activation", name))
+			return errors.Wrap(err, fmt.Sprintf("Container('%s').Activation", name))
 		}
 	}
 	return nil
 }
 
 //Shutdown - deactivate the reactor instance
-func (this *Reactor) Shutdown() {
-	for _, obs := range this.observers {
+func (this *_Reactor) Shutdown() {
+	for _, obs := range this.containers {
 		obs.Shutdown()
 	}
 }
