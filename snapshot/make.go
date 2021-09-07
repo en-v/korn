@@ -34,6 +34,10 @@ func makeSnapshot(target interface{}, parent *Snapshot, key string) (*Snapshot, 
 
 		switch fvalue.Kind() {
 		case reflect.Struct:
+			tag, tagexists := fstruct.Tag.Lookup(core.TAG)
+			if tagexists && tag == "-" {
+				continue
+			}
 			shot.branches[fstruct.Name], err = makeSnapshot(fvalue.Interface(), shot, fstruct.Name)
 			if err != nil {
 				return nil, err
@@ -45,7 +49,9 @@ func makeSnapshot(target interface{}, parent *Snapshot, key string) (*Snapshot, 
 				if tag == core.TAG_ADD || tag == core.TAG_REM {
 					return nil, errors.New("Tags cannot to be: " + core.TAG_ADD + " or " + core.TAG_REM)
 				}
-				shot.fields[fstruct.Name] = makeField(&fvalue, tag)
+				shot.fields[fstruct.Name] = makeField(&fvalue, tag, true)
+			} else {
+				shot.fields[fstruct.Name] = makeField(&fvalue, "", false)
 			}
 		}
 	}
@@ -53,7 +59,7 @@ func makeSnapshot(target interface{}, parent *Snapshot, key string) (*Snapshot, 
 	return shot, nil
 }
 
-func makeField(inv *reflect.Value, rname string) *Field {
+func makeField(inv *reflect.Value, rname string, observable bool) *Field {
 	var outv interface{}
 
 	switch inv.Kind() {
@@ -76,8 +82,9 @@ func makeField(inv *reflect.Value, rname string) *Field {
 	}
 
 	return &Field{
-		Value:    outv,
-		Kind:     inv.Kind(),
-		Reaction: rname,
+		Value:      outv,
+		Kind:       inv.Kind(),
+		Reaction:   rname,
+		Observable: observable,
 	}
 }

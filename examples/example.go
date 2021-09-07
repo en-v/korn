@@ -4,6 +4,7 @@ import (
 	"github.com/en-v/log"
 	"github.com/en-v/reactor"
 	"github.com/en-v/reactor/event"
+	"github.com/en-v/reactor/query"
 )
 
 func main() {
@@ -37,6 +38,15 @@ func singleContainer() {
 	err(cont.Remove("2"))
 	err(cont.Capture(new("5")))
 	modify(cont.Get("1").(*Type))
+	log.Debugw("All", "Length", len(cont.All()))
+	// select
+	q := query.S{
+		"Struct.Enabled": query.NotEq(false),
+		"Foo":            query.Eq(1.145),
+	}
+	res, e := cont.Select(q)
+	err(e)
+	log.Debug(res)
 }
 
 func multipleContainers() {
@@ -94,17 +104,17 @@ func modify(t *Type) {
 	t.Struct.MapInt[0] = 0
 	t.Struct.Slice[0] = "zero"
 	t.Foo = 6.77
-	t.React()
+	t.Commit()
 }
 
 // ##################################################################
 
 type Type struct {
-	reactor.Jet
-	String string `react:"string-changed"`
-	Int    int    `react:"int-changed"`
-	Foo    float32
-	Struct Struct
+	reactor.Jet `react:"-"`
+	String      string `react:"string-changed"`
+	Int         int    `react:"int-changed"`
+	Foo         float32
+	Struct      Struct
 }
 
 type Struct struct {

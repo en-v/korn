@@ -60,3 +60,7 @@ func (this *Container) Name() string {
 func (this *Container) CatchError() error {
 	return <-this.errs
 }
+
+func (this *Container) All() map[string]interface{} {
+	return this.origins
+}

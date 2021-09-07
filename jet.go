@@ -12,7 +12,7 @@ type Jet struct {
 	___key       string
 }
 
-func (this *Jet) React() {
+func (this *Jet) Commit() {
 	if this.___container != nil {
 		err := this.___container.LookAt(this.___key)
 		if err != nil {

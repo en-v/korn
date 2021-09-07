@@ -34,32 +34,35 @@ func (this *Snapshot) Compare(target IJet) error {
 	return nil
 }
 
-func (this *Snapshot) compare(diffsOut map[string]*Difference, new *Snapshot) error {
+func (this *Snapshot) compare(diffsOut map[string]*Difference, newSnap *Snapshot) error {
 	var found bool
 
-	for fieldName, Old := range this.fields {
-		New := new.fields[fieldName]
+	for fieldName, old := range this.fields {
+		if !old.Observable {
+			continue
+		}
+		new := newSnap.fields[fieldName]
 
-		switch Old.Kind {
+		switch old.Kind {
 		case reflect.Map:
-			found = !reflect.DeepEqual(Old.Value, New.Value)
+			found = !reflect.DeepEqual(old.Value, new.Value)
 
 		case reflect.Array:
-			found = !reflect.DeepEqual(Old.Value, New.Value)
+			found = !reflect.DeepEqual(old.Value, new.Value)
 
 		case reflect.Slice:
-			found = !reflect.DeepEqual(Old.Value, New.Value)
+			found = !reflect.DeepEqual(old.Value, new.Value)
 
 		default:
-			found = Old.Value != New.Value
+			found = old.Value != new.Value
 		}
 
 		if found {
-			diffsOut[Old.Reaction] = &Difference{
-				Reaction:  Old.Reaction,
+			diffsOut[old.Reaction] = &Difference{
+				Reaction:  old.Reaction,
 				Name:      fieldName,
-				Old:       Old.Value,
-				New:       New.Value,
+				Old:       old.Value,
+				New:       new.Value,
 				Container: this.getRoot().container,
 				Path:      this.GetRoute() + "." + fieldName,
 			}
@@ -67,7 +70,7 @@ func (this *Snapshot) compare(diffsOut map[string]*Difference, new *Snapshot) er
 	}
 
 	for name, branch := range this.branches {
-		err := branch.compare(diffsOut, new.branches[name])
+		err := branch.compare(diffsOut, newSnap.branches[name])
 		if err != nil {
 			return err
 		}

@@ -16,9 +16,10 @@ type Snapshot struct {
 }
 
 type Field struct {
-	Value    interface{}
-	Kind     reflect.Kind
-	Reaction string
+	Value      interface{}
+	Kind       reflect.Kind
+	Reaction   string
+	Observable bool
 }
 
 type Difference struct {

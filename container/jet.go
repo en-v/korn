@@ -4,6 +4,6 @@ type IJet interface {
 	Key() string
 	SetKey(string)
 	Clone() interface{}
-	React()
+	Commit()
 	Observe(IContainer)
 }

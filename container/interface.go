@@ -1,6 +1,9 @@
 package container
 
-import "github.com/en-v/reactor/event"
+import (
+	"github.com/en-v/reactor/event"
+	"github.com/en-v/reactor/query"
+)
 
 type IContainer interface {
 	//Capture - capture the target for observation and containing.
@@ -11,6 +14,10 @@ type IContainer interface {
 	//Get - return the target by key.
 	//The target is an object which provide an intefcae "types.Target".
 	Get(key string) interface{}
+
+	//All - return all contained and abservable targets.
+	//The target is an object which provide an intefcae "types.Target".
+	All() map[string]interface{}
 
 	//Remove - remove the target by key.
 	//The target is an object which provide an intefcae "types.Target".
@@ -36,6 +43,8 @@ type IContainer interface {
 
 	//CatchError - waiting for internal errors
 	CatchError() error
+
+	Select(query.S) (map[string]interface{}, error)
 
 	LookAt(key string) error
 }
