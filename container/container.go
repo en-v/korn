@@ -64,3 +64,11 @@ func (this *Container) CatchError() error {
 func (this *Container) All() map[string]interface{} {
 	return this.origins
 }
+
+func (this *Container) Count() int {
+	return len(this.origins)
+}
+
+func (this *Container) Reset() error {
+	panic("Method not implememted")
+}

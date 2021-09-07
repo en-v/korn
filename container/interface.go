@@ -45,6 +45,9 @@ type IContainer interface {
 	CatchError() error
 
 	Select(query.S) (map[string]interface{}, error)
+	Count() int
 
+	Reset() error
+	
 	LookAt(key string) error
 }
