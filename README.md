@@ -15,11 +15,6 @@ rtor, cont := reactor.Kit("single")
 cont.On("add", universalHandler)
 cont.On("remove", universalHandler)
 cont.On("string-changed", universalHandler)
-cont.On("int-changed", universalHandler)
-cont.On("struct-enabled-changed", universalHandler)
-cont.On("struct-slice-changed", universalHandler)
-cont.On("struct-map-string-changed", universalHandler)
-cont.On("struct-map-int-changed", universalHandler)
 
 // capture targets (map or single) and activate reactor
 targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
