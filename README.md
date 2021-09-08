@@ -1,6 +1,6 @@
 # The Korn
 
-A reactivity in-memory data base engine for Go.
+An in-memory reactivity database engine for Go.
 [ K-O-R-N : Keep, Observe, React, eNgine ]
 
 ## Quick Start
