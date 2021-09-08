@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-//IKorn - reactivity framework for Go
-type IKorn interface {
+//IEngine - reactivity framework for Go
+type IEngine interface {
 	//Active - activate the kor instance
 	Activate() error
 	//Shutdown - deactivate the kor instance
@@ -18,26 +18,26 @@ type IKorn interface {
 	Holder(string) holder.IHolder
 }
 
-type Engine struct {
+type _Engine struct {
 	holders map[string]holder.IHolder
 }
 
 //Empty - create a new KORN instance
-func Empty() IKorn {
-	engine := &Engine{
+func Empty() IEngine {
+	engine := &_Engine{
 		holders: make(map[string]holder.IHolder),
 	}
-	return IKorn(engine)
+	return IEngine(engine)
 }
 
 //Kit - make a couple of basic elements: the korn engine and the objsect holder
-func Kit(name string) (IKorn, holder.IHolder) {
+func Kit(name string) (IEngine, holder.IHolder) {
 	engine := Empty()
 	holder := engine.Holder(name)
 	return engine, holder
 }
 
-func (self *Engine) Holder(name string) holder.IHolder {
+func (self *_Engine) Holder(name string) holder.IHolder {
 	obs, exists := self.holders[name]
 	if exists {
 		return obs
@@ -47,7 +47,7 @@ func (self *Engine) Holder(name string) holder.IHolder {
 	return self.holders[name]
 }
 
-func (self *Engine) Activate() error {
+func (self *_Engine) Activate() error {
 	if len(self.holders) == 0 {
 		return errors.New("No holders found")
 	}
@@ -62,7 +62,7 @@ func (self *Engine) Activate() error {
 	return nil
 }
 
-func (self *Engine) Shutdown() {
+func (self *_Engine) Shutdown() {
 	for _, obs := range self.holders {
 		obs.Shutdown()
 	}
