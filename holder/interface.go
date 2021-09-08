@@ -1,14 +1,14 @@
-package container
+package holder
 
 import (
-	"github.com/en-v/reactor/event"
-	"github.com/en-v/reactor/query"
+	"github.com/en-v/kor/event"
+	"github.com/en-v/kor/query"
 )
 
-type IContainer interface {
+type Holder interface {
 	//Capture - capture the target for observation and containing.
 	//The target is an object which provide an intefcae "types.Target".
-	//If reactor is activated "add" reaction will be invoked
+	//If kor is activated "add" reaction will be invoked
 	Capture(target interface{}) error
 
 	//Get - return the target by key.
@@ -21,24 +21,24 @@ type IContainer interface {
 
 	//Remove - remove the target by key.
 	//The target is an object which provide an intefcae "types.Target".
-	//If reactor is activated "remove" reaction will be invoked
+	//If kor is activated "remove" reaction will be invoked
 	Remove(key string) error
 
 	//On - add an event handler
 	//If an event handler with current name alredy exists then it will be removed and written as a new.
-	//event.Handler -> github.com/en-vreactor/event/Handler
+	//event.Handler -> github.com/en-vkor/event/Handler
 	//Make a panic if the handlir is empty (nil)
 	On(string, event.Handler)
 
-	//Activate - activate the container
-	//No need to call this method cos the Reactor will call it
+	//Activate - activate the holder
+	//No need to call self method cos the kor will call it
 	Activate() error
 
-	//Shutdown - deactivate container
-	//No need to call this method cos the Reactor will call it
+	//Shutdown - deactivate holder
+	//No need to call self method cos the kor will call it
 	Shutdown()
 
-	//Name - getter for container name only
+	//Name - getter for holder name only
 	Name() string
 
 	//CatchError - waiting for internal errors
@@ -48,6 +48,6 @@ type IContainer interface {
 	Count() int
 
 	Reset() error
-	
+
 	LookAt(key string) error
 }

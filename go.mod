@@ -1,4 +1,4 @@
-module github.com/en-v/reactor
+module github.com/en-v/kor
 
 go 1.17
 

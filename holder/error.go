@@ -1,14 +1,14 @@
-package container
+package holder
 
 import (
 	"github.com/en-v/log"
 )
 
-func (this *Container) catchError(err error) {
+func (self *_Holder) catchError(err error) {
 	log.Error(err)
 	if err != nil {
 		go func() {
-			this.errs <- err
+			self.errch <- err
 		}()
 	}
 }

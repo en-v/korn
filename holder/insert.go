@@ -1,9 +1,9 @@
-package container
+package holder
 
-type IJet interface {
+type IInsert interface {
 	Key() string
 	SetKey(string)
 	Clone() interface{}
 	Commit()
-	Observe(IContainer)
+	Link(Holder)
 }

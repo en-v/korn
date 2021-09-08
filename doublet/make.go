@@ -1,22 +1,23 @@
-package snapshot
+package doublet
 
 import (
 	"errors"
 	"reflect"
 
-	"github.com/en-v/reactor/core"
+	"github.com/en-v/kor/core"
+	"github.com/en-v/kor/event"
 )
 
-func Make(target IJet, container string) (*Snapshot, error) {
-	shot, err := makeSnapshot(target, nil, target.Key())
+func Make(target IInsert, holder string) (*Doublet, error) {
+	shot, err := makedoublet(target, nil, target.Key())
 	if err != nil {
 		return nil, err
 	}
-	shot.container = container
+	shot.holder = holder
 	return shot, nil
 }
 
-func makeSnapshot(target interface{}, parent *Snapshot, key string) (*Snapshot, error) {
+func makedoublet(target interface{}, parent *Doublet, key string) (*Doublet, error) {
 	var err error
 
 	if target == nil {
@@ -38,7 +39,7 @@ func makeSnapshot(target interface{}, parent *Snapshot, key string) (*Snapshot, 
 			if tagexists && tag == "-" {
 				continue
 			}
-			shot.branches[fstruct.Name], err = makeSnapshot(fvalue.Interface(), shot, fstruct.Name)
+			shot.branches[fstruct.Name], err = makedoublet(fvalue.Interface(), shot, fstruct.Name)
 			if err != nil {
 				return nil, err
 			}
@@ -46,8 +47,8 @@ func makeSnapshot(target interface{}, parent *Snapshot, key string) (*Snapshot, 
 		default:
 			tag, tagexists := fstruct.Tag.Lookup(core.TAG)
 			if tagexists {
-				if tag == core.TAG_ADD || tag == core.TAG_REM {
-					return nil, errors.New("Tags cannot to be: " + core.TAG_ADD + " or " + core.TAG_REM)
+				if err = event.IsNotReservedActionName(tag); err != nil {
+					return nil, err
 				}
 				shot.fields[fstruct.Name] = makeField(&fvalue, tag, true)
 			} else {

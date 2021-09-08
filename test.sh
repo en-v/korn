@@ -1,4 +1,4 @@
-echo "THE REACTOR TEST"
+echo "THE kor TEST"
 echo " "
 
 cd ./examples

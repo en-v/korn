@@ -8,10 +8,10 @@ import (
 
 type S map[string]Condition // selector
 
-func (this S) Selectors() []Selector {
-	res := make([]Selector, len(this))
+func (self S) Selectors() []Selector {
+	res := make([]Selector, len(self))
 	i := 0
-	for q, s := range this {
+	for q, s := range self {
 		res[i] = Selector{
 			Path:     strings.Split(q, "."),
 			Operator: s.O,
@@ -29,6 +29,6 @@ type Selector struct {
 	Value    interface{}
 }
 
-func (this *Selector) Match(v interface{}) bool {
+func (self *Selector) Match(v interface{}) bool {
 	return false
 }

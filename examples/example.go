@@ -1,60 +1,60 @@
 package main
 
 import (
+	"github.com/en-v/kor"
+	"github.com/en-v/kor/event"
+	"github.com/en-v/kor/query"
 	"github.com/en-v/log"
-	"github.com/en-v/reactor"
-	"github.com/en-v/reactor/event"
-	"github.com/en-v/reactor/query"
 )
 
 func main() {
-	singleContainer()
-	//multipleContainers()
+	singleholder()
+	//multipleholders()
 	//withErrorCapturing()
 }
 
-func singleContainer() {
+func singleholder() {
 
-	// create reactor kit (Reactor and cont Container), also you can use "New" for an empty reactor create
-	rtor, cont := reactor.Kit("single")
-	// adding handlers to the container
-	cont.On("add", universalHandler)
-	cont.On("remove", universalHandler)
-	cont.On("string-changed", universalHandler)
-	cont.On("int-changed", universalHandler)
-	cont.On("struct-enabled-changed", universalHandler)
-	cont.On("struct-slice-changed", universalHandler)
-	cont.On("struct-map-string-changed", universalHandler)
-	cont.On("struct-map-int-changed", universalHandler)
+	// create kor kit (kor and holder holder), also you can use "New" for an empty kor create
+	kor, holder := kor.Kit("single")
+	// adding handlers to the holder
+	holder.On("add", universalHandler)
+	holder.On("remove", universalHandler)
+	holder.On("string-changed", universalHandler)
+	holder.On("int-changed", universalHandler)
+	holder.On("struct-enabled-changed", universalHandler)
+	holder.On("struct-slice-changed", universalHandler)
+	holder.On("struct-map-string-changed", universalHandler)
+	holder.On("struct-map-int-changed", universalHandler)
 
-	// capture targets (map or single) and activate reactor
+	// capture targets (map or single) and activate kor
 	targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
-	err(cont.Capture(targets))
-	err(rtor.Activate())
+	err(holder.Capture(targets))
+	err(kor.Activate())
 
 	// to modificate targets and look at results
-	modify(cont.Get("1").(*Type))
+	modify(holder.Get("1").(*Type))
 	modify(targets["4"])
-	err(cont.Remove("2"))
-	err(cont.Capture(new("5")))
-	modify(cont.Get("1").(*Type))
-	log.Debugw("All", "Length", len(cont.All()))
+	err(holder.Remove("2"))
+	err(holder.Capture(new("5")))
+	modify(holder.Get("1").(*Type))
+	log.Debugw("All", "Length", len(holder.All()))
 	// select
 	q := query.S{
 		"Struct.Enabled": query.NotEq(false),
 		"Foo":            query.Eq(1.145),
 	}
-	res, e := cont.Select(q)
+	res, e := holder.Select(q)
 	err(e)
 	log.Debug(res)
 }
 
-func multipleContainers() {
+func multipleholders() {
 
-	// create reactor kit (Reactor and first Container), also you can use "New" for an empty reactor create
-	rtor, first := reactor.Kit("first")
-	second := rtor.Container("second")
-	// adding handlers to the container
+	// create kor kit (kor and first holder), also you can use "New" for an empty kor create
+	kor, first := kor.Kit("first")
+	second := kor.Holder("second")
+	// adding handlers to the holder
 	first.On("add", universalHandler)
 	first.On("remove", universalHandler)
 	first.On("string-changed", universalHandler)
@@ -69,10 +69,10 @@ func multipleContainers() {
 	second.On("string-changed", universalHandler)
 	second.On("int-changed", universalHandler)
 
-	// capture targets (map or single) and activate reactor
+	// capture targets (map or single) and activate kor
 	err(first.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
 	err(second.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
-	err(rtor.Activate())
+	err(kor.Activate())
 
 	// to modificate targets and look at results
 	modify(first.Get("1").(*Type))
@@ -93,7 +93,7 @@ func err(err error) {
 }
 
 func universalHandler(event *event.Event) {
-	log.Debugw(event.Kind, "Field", event.Name, "Old", event.Old, "New", event.New, "Container", event.Container, "Path", event.Path)
+	log.Debugw(string(event.Kind), "Field", event.Name, "Old", event.Old, "New", event.New, "holder", event.Holder, "Path", event.Path)
 }
 
 func modify(t *Type) {
@@ -110,18 +110,18 @@ func modify(t *Type) {
 // ##################################################################
 
 type Type struct {
-	reactor.Jet `react:"-"`
-	String      string `react:"string-changed"`
-	Int         int    `react:"int-changed"`
-	Foo         float32
-	Struct      Struct
+	kor.Insert `kor:"-"`
+	String     string `kor:"string-changed"`
+	Int        int    `kor:"int-changed"`
+	Foo        float32
+	Struct     Struct
 }
 
 type Struct struct {
-	Enabled   bool           `react:"struct-enabled-changed"`
-	Slice     []string       `react:"struct-slice-changed"`
-	MapString map[string]int `react:"struct-map-string-changed"`
-	MapInt    map[int]int    `react:"struct-map-int-changed"`
+	Enabled   bool           `kor:"struct-enabled-changed"`
+	Slice     []string       `kor:"struct-slice-changed"`
+	MapString map[string]int `kor:"struct-map-string-changed"`
+	MapInt    map[int]int    `kor:"struct-map-int-changed"`
 }
 
 func new(id string) *Type {

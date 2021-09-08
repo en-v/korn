@@ -1,25 +1,25 @@
-### THE REACTOR
+### THE KOR
 
-A reactivity framework for Go
-
+A reactivity in-memory data base for Go
+KOR > Keep, Observe, React
 
 # Example
 
 Full example's code in ./examples/example.go
 
 ```go
-// create reactor kit (Reactor and first Container), also you can use "New" for an empty reactor create
-rtor, cont := reactor.Kit("single")
+// create KOR kit (Engine and first Holder), also you can use "New" for an empty engine create
+kor, cont := kor.Kit("single")
 
-// adding handlers to the container
+// adding handlers to the holder
 cont.On("add", universalHandler)
 cont.On("remove", universalHandler)
 cont.On("string-changed", universalHandler)
 
-// capture targets (map or single) and activate reactor
+// capture targets (map or single) and activate kor
 targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
 cont.Capture(targets)
-rtor.Activate()
+kor.Activate()
 
 // to modificate targets and look at results
 modify(cont.Get("1").(*Type))
