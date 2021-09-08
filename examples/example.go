@@ -1,22 +1,21 @@
 package main
 
 import (
-	kor "github.com/en-v/korn"
+	"github.com/en-v/korn"
 	"github.com/en-v/korn/event"
 	"github.com/en-v/korn/query"
 	"github.com/en-v/log"
 )
 
 func main() {
-	singleholder()
-	//multipleholders()
-	//withErrorCapturing()
+	example_1_single_holder()
+	example_2_multiple_holders()
 }
 
-func singleholder() {
+func example_1_single_holder() {
 
-	// create kor kit (kor and holder holder), also you can use "New" for an empty kor create
-	kor, holder := kor.Kit("single")
+	// create engine kit (engine and holder holder), also you can use "New" for an empty engine create
+	engine, holder := korn.Kit("single")
 	// adding handlers to the holder
 	holder.On("add", universalHandler)
 	holder.On("remove", universalHandler)
@@ -30,7 +29,7 @@ func singleholder() {
 	// capture targets (map or single) and activate kor
 	targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
 	err(holder.Capture(targets))
-	err(kor.Activate())
+	err(engine.Activate())
 
 	// to modificate targets and look at results
 	modify(holder.Get("1").(*Type))
@@ -44,15 +43,16 @@ func singleholder() {
 		"Struct.Enabled": query.NotEq(false),
 		"Foo":            query.Eq(1.145),
 	}
-	res, e := holder.Select(q)
+	res, e := holder.Select(q) // experimental feature, in-rpogress
 	err(e)
+
 	log.Debug(res)
 }
 
-func multipleholders() {
+func example_2_multiple_holders() {
 
 	// create kor kit (kor and first holder), also you can use "New" for an empty kor create
-	kor, first := kor.Kit("first")
+	kor, first := korn.Kit("first")
 	second := kor.Holder("second")
 	// adding handlers to the holder
 	first.On("add", universalHandler)
@@ -82,10 +82,6 @@ func multipleholders() {
 	modify(first.Get("1").(*Type))
 }
 
-func withErrorCapturing() {
-
-}
-
 func err(err error) {
 	if err != nil {
 		panic(err)
@@ -110,18 +106,18 @@ func modify(t *Type) {
 // ##################################################################
 
 type Type struct {
-	kor.Inset `kor:"-"`
-	String     string `kor:"string-changed"`
-	Int        int    `kor:"int-changed"`
+	korn.Inset `korn:"-"`
+	String     string `korn:"string-changed"`
+	Int        int    `korn:"int-changed"`
 	Foo        float32
 	Struct     Struct
 }
 
 type Struct struct {
-	Enabled   bool           `kor:"struct-enabled-changed"`
-	Slice     []string       `kor:"struct-slice-changed"`
-	MapString map[string]int `kor:"struct-map-string-changed"`
-	MapInt    map[int]int    `kor:"struct-map-int-changed"`
+	Enabled   bool           `korn:"struct-enabled-changed"`
+	Slice     []string       `korn:"struct-slice-changed"`
+	MapString map[string]int `korn:"struct-map-string-changed"`
+	MapInt    map[int]int    `korn:"struct-map-int-changed"`
 }
 
 func new(id string) *Type {
