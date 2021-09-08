@@ -1,11 +1,11 @@
 package holder
 
 import (
-	"github.com/en-v/kor/event"
-	"github.com/en-v/kor/query"
+	"github.com/en-v/korn/event"
+	"github.com/en-v/korn/query"
 )
 
-type Holder interface {
+type IHolder interface {
 	//Capture - capture the target for observation and containing.
 	//The target is an object which provide an intefcae "types.Target".
 	//If kor is activated "add" reaction will be invoked

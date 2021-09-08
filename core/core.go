@@ -1,5 +1,5 @@
 package core
 
 const (
-	TAG = "kor"
+	TAG = "korn"
 )

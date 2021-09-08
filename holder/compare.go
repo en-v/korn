@@ -1,12 +1,12 @@
 package holder
 
 import (
-	"github.com/en-v/kor/doublet"
-	"github.com/en-v/kor/event"
+	"github.com/en-v/korn/doublet"
+	"github.com/en-v/korn/event"
 	"github.com/pkg/errors"
 )
 
-func (self *_Holder) compare(shot *doublet.Doublet, target IInsert) error {
+func (self *_Holder) compare(shot *doublet.Doublet, target iInset) error {
 
 	err := shot.Compare(target)
 	if err != nil {

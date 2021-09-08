@@ -4,11 +4,11 @@ import (
 	"errors"
 	"reflect"
 
-	"github.com/en-v/kor/core"
-	"github.com/en-v/kor/event"
+	"github.com/en-v/korn/core"
+	"github.com/en-v/korn/event"
 )
 
-func Make(target IInsert, holder string) (*Doublet, error) {
+func Make(target iInsert, holder string) (*Doublet, error) {
 	shot, err := makedoublet(target, nil, target.Key())
 	if err != nil {
 		return nil, err

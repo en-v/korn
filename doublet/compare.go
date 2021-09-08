@@ -6,7 +6,7 @@ import (
 	"github.com/en-v/log"
 )
 
-func (self *Doublet) Compare(target IInsert) error {
+func (self *Doublet) Compare(target iInsert) error {
 
 	if self.diffs == nil {
 		self.diffs = make(map[string]*Difference)

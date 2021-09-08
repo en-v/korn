@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/en-v/kor"
-	"github.com/en-v/kor/event"
-	"github.com/en-v/kor/query"
+	kor "github.com/en-v/korn"
+	"github.com/en-v/korn/event"
+	"github.com/en-v/korn/query"
 	"github.com/en-v/log"
 )
 
@@ -110,7 +110,7 @@ func modify(t *Type) {
 // ##################################################################
 
 type Type struct {
-	kor.Insert `kor:"-"`
+	kor.Inset `kor:"-"`
 	String     string `kor:"string-changed"`
 	Int        int    `kor:"int-changed"`
 	Foo        float32

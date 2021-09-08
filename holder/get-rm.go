@@ -1,7 +1,7 @@
 package holder
 
 import (
-	"github.com/en-v/kor/event"
+	"github.com/en-v/korn/event"
 	"github.com/pkg/errors"
 )
 

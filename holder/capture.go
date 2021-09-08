@@ -3,8 +3,8 @@ package holder
 import (
 	"reflect"
 
-	"github.com/en-v/kor/doublet"
-	"github.com/en-v/kor/event"
+	"github.com/en-v/korn/doublet"
+	"github.com/en-v/korn/event"
 	"github.com/pkg/errors"
 )
 
@@ -27,14 +27,14 @@ func (self *_Holder) Capture(targets interface{}) error {
 
 func (self *_Holder) captureStruct(value reflect.Value) (err error) {
 
-	key := value.Interface().(IInsert).Key()
+	key := value.Interface().(iInset).Key()
 	_, exists := self.origins[key]
 	if exists {
 		return errors.New("Element is alredy captured, key = " + key)
 	}
 
 	self.origins[key] = value.Interface()
-	jet := self.origins[key].(IInsert)
+	jet := self.origins[key].(iInset)
 	jet.Link(self)
 	self.doublets[jet.Key()], err = doublet.Make(jet, self.name)
 
@@ -57,7 +57,7 @@ func (self *_Holder) captureStruct(value reflect.Value) (err error) {
 func (self *_Holder) captureMap(value reflect.Value) (err error) {
 	for _, key := range value.MapKeys() {
 		if !value.MapIndex(key).IsNil() {
-			item := value.MapIndex(key).Interface().(IInsert)
+			item := value.MapIndex(key).Interface().(iInset)
 			_, exists := self.origins[item.Key()]
 			if exists {
 				return errors.New("Element is alredy captured, key = " + item.Key())
@@ -68,7 +68,7 @@ func (self *_Holder) captureMap(value reflect.Value) (err error) {
 	for _, keyValue := range value.MapKeys() {
 		if !value.MapIndex(keyValue).IsNil() {
 			item := value.MapIndex(keyValue).Interface()
-			ins := item.(IInsert)
+			ins := item.(iInset)
 			key := ins.Key()
 
 			ins.Link(self)

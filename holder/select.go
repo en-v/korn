@@ -1,7 +1,7 @@
 package holder
 
 import (
-	"github.com/en-v/kor/query"
+	"github.com/en-v/korn/query"
 	"github.com/en-v/log"
 )
 

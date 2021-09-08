@@ -1,4 +1,4 @@
-module github.com/en-v/kor
+module github.com/en-v/korn
 
 go 1.17
 

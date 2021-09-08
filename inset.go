@@ -1,18 +1,18 @@
-package kor
+package korn
 
 import (
 	"errors"
 
-	"github.com/en-v/kor/holder"
+	"github.com/en-v/korn/holder"
 	"github.com/en-v/log"
 )
 
-type Insert struct {
-	___holder holder.Holder
+type Inset struct {
+	___holder holder.IHolder
 	___key    string
 }
 
-func (self *Insert) Commit() {
+func (self *Inset) Commit() {
 	if self.___holder != nil {
 		err := self.___holder.LookAt(self.___key)
 		if err != nil {
@@ -23,19 +23,19 @@ func (self *Insert) Commit() {
 	}
 }
 
-func (self *Insert) Link(hldr holder.Holder) {
+func (self *Inset) Link(hldr holder.IHolder) {
 	self.___holder = hldr
 }
 
-func (self *Insert) SetKey(key string) {
+func (self *Inset) SetKey(key string) {
 	self.___key = key
 }
 
-func (self *Insert) Key() string {
+func (self *Inset) Key() string {
 	return self.___key
 }
 
-func (self *Insert) Clone() interface{} {
+func (self *Inset) Clone() interface{} {
 	clone := *self
 	log.Debug(&self)
 	return &clone

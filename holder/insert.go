@@ -1,9 +1,9 @@
 package holder
 
-type IInsert interface {
+type iInset interface {
 	Key() string
 	SetKey(string)
 	Clone() interface{}
 	Commit()
-	Link(Holder)
+	Link(IHolder)
 }

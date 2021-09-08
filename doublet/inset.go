@@ -1,5 +1,5 @@
 package doublet
 
-type IInsert interface {
+type iInsert interface {
 	Key() string
 }
