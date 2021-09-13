@@ -24,11 +24,11 @@ type IHolder interface {
 	//If kor is activated "remove" reaction will be invoked
 	Remove(key string) error
 
-	//On - add an event handler
+	//Bind - add an event handler
 	//If an event handler with current name alredy exists then it will be removed and written as a new.
 	//event.Handler -> github.com/en-vkor/event/Handler
 	//Make a panic if the handlir is empty (nil)
-	On(string, event.Handler)
+	Bind(string, event.Handler)
 
 	//Activate - activate the holder
 	//No need to call self method cos the kor will call it

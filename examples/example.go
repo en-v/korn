@@ -17,14 +17,14 @@ func example_1_single_holder() {
 	// create engine kit (engine and holder holder), also you can use "New" for an empty engine create
 	engine, holder := korn.Kit("single")
 	// adding handlers to the holder
-	holder.On("add", universalHandler)
-	holder.On("remove", universalHandler)
-	holder.On("string-changed", universalHandler)
-	holder.On("int-changed", universalHandler)
-	holder.On("struct-enabled-changed", universalHandler)
-	holder.On("struct-slice-changed", universalHandler)
-	holder.On("struct-map-string-changed", universalHandler)
-	holder.On("struct-map-int-changed", universalHandler)
+	holder.Bind("add", universalHandler)
+	holder.Bind("remove", universalHandler)
+	holder.Bind("string-changed", universalHandler)
+	holder.Bind("int-changed", universalHandler)
+	holder.Bind("struct-enabled-changed", universalHandler)
+	holder.Bind("struct-slice-changed", universalHandler)
+	holder.Bind("struct-map-string-changed", universalHandler)
+	holder.Bind("struct-map-int-changed", universalHandler)
 
 	// capture targets (map or single) and activate kor
 	targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
@@ -55,19 +55,19 @@ func example_2_multiple_holders() {
 	kor, first := korn.Kit("first")
 	second := kor.Holder("second")
 	// adding handlers to the holder
-	first.On("add", universalHandler)
-	first.On("remove", universalHandler)
-	first.On("string-changed", universalHandler)
-	first.On("int-changed", universalHandler)
-	first.On("struct-enabled-changed", universalHandler)
-	first.On("struct-slice-changed", universalHandler)
-	first.On("struct-map-string-changed", universalHandler)
-	first.On("struct-map-int-changed", universalHandler)
+	first.Bind("add", universalHandler)
+	first.Bind("remove", universalHandler)
+	first.Bind("string-changed", universalHandler)
+	first.Bind("int-changed", universalHandler)
+	first.Bind("struct-enabled-changed", universalHandler)
+	first.Bind("struct-slice-changed", universalHandler)
+	first.Bind("struct-map-string-changed", universalHandler)
+	first.Bind("struct-map-int-changed", universalHandler)
 
-	second.On("add", universalHandler)
-	second.On("remove", universalHandler)
-	second.On("string-changed", universalHandler)
-	second.On("int-changed", universalHandler)
+	second.Bind("add", universalHandler)
+	second.Bind("remove", universalHandler)
+	second.Bind("string-changed", universalHandler)
+	second.Bind("int-changed", universalHandler)
 
 	// capture targets (map or single) and activate kor
 	err(first.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))

@@ -29,7 +29,7 @@ func Make(name string) *_Holder {
 	}
 }
 
-func (self *_Holder) On(name string, handler event.Handler) {
+func (self *_Holder) Bind(name string, handler event.Handler) {
 	if handler == nil {
 		panic("Handler cannot to be empty")
 	}
