@@ -40,6 +40,13 @@ user.Name = "Bob Smith"
 user.Enabled = false
 user.Commit() // require for reactivity magic :-)
 ```
+or
+```go
+err := user.Commit() 
+if err != nil {
+    panic(err)
+}
+```
 For your enjoy you can make a wrapper for the holder and it will cast your types easy. 
 
 **IV.** PROFIT!11

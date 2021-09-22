@@ -12,15 +12,15 @@ type Inset struct {
 	___key    string
 }
 
-func (self *Inset) Commit() {
-	if self.___holder != nil {
-		err := self.___holder.LookAt(self.___key)
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		panic(errors.New("holder is not setted"))
+func (self *Inset) Commit() error {
+	if self.___holder == nil {
+		return errors.New("Holder Is Null.")
 	}
+	err := self.___holder.LookAt(self.___key)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (self *Inset) Link(hldr holder.IHolder) {

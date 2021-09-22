@@ -100,7 +100,10 @@ func modify(t *Type) {
 	t.Struct.MapInt[0] = 0
 	t.Struct.Slice[0] = "zero"
 	t.Foo = 6.77
-	t.Commit()
+	err := t.Commit()
+	if err != nil {
+		panic(err)
+	}
 }
 
 // ##################################################################
