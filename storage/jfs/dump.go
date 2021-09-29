@@ -1,4 +1,4 @@
-package jsf
+package jfs
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (self *JSF) Dump(holderName string, obj inset.InsetInterface) error {
+func (self *JFS) Dump(holderName string, obj inset.InsetInterface) error {
 
 	filename := self.fullFileName(holderName, obj.GetId())
 

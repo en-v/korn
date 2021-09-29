@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/korn/storage/jsf"
+	"github.com/en-v/korn/storage/jfs"
 	"github.com/en-v/korn/storage/mdb"
 	"github.com/pkg/errors"
 )
@@ -34,7 +34,7 @@ func Make(name string, param string) (IStorage, error) {
 		return s, nil
 
 	} else {
-		s, err := jsf.Make(name, param)
+		s, err := jfs.Make(name, param)
 		if err != nil {
 			return nil, errors.Wrap(err, "JSON Storage Init")
 		}

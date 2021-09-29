@@ -1,6 +1,6 @@
 # The Korn
 
-An in-memory reactivity database engine for Go.
+An in-memory reactivity database engine for Go which can store and restore data to JSON files or MongoDB.
 [ K-O-R-N : Keep, Observe, React, eNgine ]
 
 ## Quick Start
@@ -20,16 +20,27 @@ Bind reactions names and handlers.
 Make and capture observable targets.
 
 ```go
-engine, holder := korn.Kit("users")
+engine, holder, err := korn.Kit("users")
 
 holder.Bind("add", addHandler) // required, the "add" event have to be defined
 holder.Bind("remove", removeHandler) // required, the "remove" too
 holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requried
 holder.Bind("enabledChanged", enabledChangedHandler)
+```
 
+Add storage if you want.
+```go
+err = holder.SetRefo(new("0")) // it needs to catch type info, temporary decision, 
+err = engine.Connect("demo", "") // JSON-files storage - JFS
+// or
+err = engine.Connect("korn_mongo_demo", "mongodb://localhost")
+err = engine.Restore()
+```
+
+```go
 users := map[string]*User{"root": user("root"), "bob": user("bob"), "guest": nil}
-holder.Capture(users) // capture targets
-engine.Activate() // activa the engine, it needs for reactivity works
+err = holder.Capture(users) // capture targets
+err = engine.Activate() // activa the engine, it needs for reactivity works
 ```
 
 **III.** To do somethig with any one target. Or many :)

@@ -1,4 +1,4 @@
-package jsf
+package jfs
 
 import (
 	"os"
@@ -6,14 +6,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-//JSF - JSON Files Storage
-type JSF struct {
+//JFS - JSON Files Storage
+type JFS struct {
 	ready bool
 	path  string
 }
 
 //Make - make JSON Files Storage
-func Make(dirname string, path string) (*JSF, error) {
+func Make(dirname string, path string) (*JFS, error) {
 	if path == "" {
 		path = "./"
 	}
@@ -24,25 +24,25 @@ func Make(dirname string, path string) (*JSF, error) {
 		return nil, errors.Wrap(err, "Make JSF")
 	}
 
-	return &JSF{
+	return &JFS{
 		ready: true,
 		path:  fullpath,
 	}, nil
 }
 
-func (self *JSF) Shutdown() {
+func (self *JFS) Shutdown() {
 	self.ready = false
 }
 
-func (self *JSF) IsReady() bool {
+func (self *JFS) IsReady() bool {
 	return self.ready
 }
 
-func (self *JSF) fullFileName(holder string, id string) string {
+func (self *JFS) fullFileName(holder string, id string) string {
 	return self.path + "/" + holder + "/" + id + ".json"
 }
 
-func (self *JSF) Prepare(holderName string) error {
+func (self *JFS) Prepare(holderName string) error {
 	err := dirPrepare(self.path + "/" + holderName)
 	if err != nil {
 		return errors.Wrap(err, "Prepare")
