@@ -1,3 +1,0 @@
-package doublet
-
-const ()

@@ -1,12 +1,13 @@
 package holder
 
 import (
-	"github.com/en-v/korn/doublet"
+	"github.com/en-v/korn/duplicate"
 	"github.com/en-v/korn/event"
+	"github.com/en-v/korn/inset"
 	"github.com/pkg/errors"
 )
 
-func (self *_Holder) compare(shot *doublet.Doublet, target iInset) error {
+func (self *_Holder) compare(shot *duplicate.Duplicate, target inset.InsetInterface) error {
 
 	err := shot.Compare(target)
 	if err != nil {
@@ -32,7 +33,7 @@ func (self *_Holder) compare(shot *doublet.Doublet, target iInset) error {
 			New:    diff.New,
 			Holder: diff.Holder,
 			Path:   diff.Path,
-			Key:    target.Key(),
+			Id:    target.GetId(),
 			Kind:   event.KIND_CHANGE,
 		})
 	}

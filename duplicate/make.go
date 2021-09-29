@@ -1,4 +1,4 @@
-package doublet
+package duplicate
 
 import (
 	"errors"
@@ -6,10 +6,11 @@ import (
 
 	"github.com/en-v/korn/core"
 	"github.com/en-v/korn/event"
+	"github.com/en-v/korn/inset"
 )
 
-func Make(target iInsert, holder string) (*Doublet, error) {
-	shot, err := makedoublet(target, nil, target.Key())
+func Make(target inset.InsetInterface, holder string) (*Duplicate, error) {
+	shot, err := makedoublet(target, nil, target.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -17,7 +18,7 @@ func Make(target iInsert, holder string) (*Doublet, error) {
 	return shot, nil
 }
 
-func makedoublet(target interface{}, parent *Doublet, key string) (*Doublet, error) {
+func makedoublet(target interface{}, parent *Duplicate, key string) (*Duplicate, error) {
 	var err error
 
 	if target == nil {

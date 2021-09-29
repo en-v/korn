@@ -1,31 +1,36 @@
 package holder
 
 import (
-	"github.com/en-v/korn/doublet"
+	"reflect"
+
+	"github.com/en-v/korn/duplicate"
 	"github.com/en-v/korn/event"
+	"github.com/en-v/korn/storage"
 	"github.com/pkg/errors"
 )
 
 type Mode byte
 
 type _Holder struct {
-	activated bool
-	name      string
-	reactions *Reactions
-	origins   map[string]interface{}
-	doublets  map[string]*doublet.Doublet
-	errch     chan error
+	activated  bool
+	name       string
+	reactions  *Reactions
+	reftype    reflect.Type
+	origins    map[string]interface{}
+	duplicates map[string]*duplicate.Duplicate
+	errch      chan error
+	storage    storage.IStorage
 }
 
 //Make - create a new instance of holder
 func Make(name string) *_Holder {
 	return &_Holder{
-		activated: false,
-		name:      name,
-		reactions: emptyReactions(),
-		errch:     make(chan error),
-		origins:   make(map[string]interface{}),
-		doublets:  make(map[string]*doublet.Doublet),
+		activated:  false,
+		name:       name,
+		reactions:  emptyReactions(),
+		errch:      make(chan error),
+		origins:    make(map[string]interface{}),
+		duplicates: make(map[string]*duplicate.Duplicate),
 	}
 }
 

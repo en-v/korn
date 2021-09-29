@@ -1,12 +1,13 @@
-package doublet
+package duplicate
 
 import (
 	"reflect"
 
+	"github.com/en-v/korn/inset"
 	"github.com/en-v/log"
 )
 
-func (self *Doublet) Compare(target iInsert) error {
+func (self *Duplicate) Compare(target inset.InsetInterface) error {
 
 	if self.diffs == nil {
 		self.diffs = make(map[string]*Difference)
@@ -29,12 +30,12 @@ func (self *Doublet) Compare(target iInsert) error {
 	self.branches = new.branches
 	self.fields = new.fields
 	if len(self.diffs) > 0 {
-		log.Debug(self.key, "Differents found", self.diffs)
+		log.Debug(self.id, "Differents found", self.diffs)
 	}
 	return nil
 }
 
-func (self *Doublet) compare(diffsOut map[string]*Difference, newSnap *Doublet) error {
+func (self *Duplicate) compare(diffsOut map[string]*Difference, newSnap *Duplicate) error {
 	var found bool
 
 	for fieldName, old := range self.fields {

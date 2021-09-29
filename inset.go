@@ -2,37 +2,44 @@ package korn
 
 import (
 	"errors"
+	"time"
 
 	"github.com/en-v/korn/holder"
 	"github.com/en-v/log"
 )
 
 type Inset struct {
-	___holder holder.IHolder
-	___key    string
+	holder  holder.IHolder
+	Id      string    `bson:"_id" json:"id"`
+	Updated time.Time `bson:"_updated" json:"_updated"`
 }
 
 func (self *Inset) Commit() error {
-	if self.___holder == nil {
+
+	self.Updated = time.Now()
+
+	if self.holder == nil {
 		return errors.New("Holder Is Null.")
 	}
-	err := self.___holder.LookAt(self.___key)
+
+	err := self.holder.Work(self.Id)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
-func (self *Inset) Link(hldr holder.IHolder) {
-	self.___holder = hldr
+func (self *Inset) Link(hldr interface{}) {
+	self.holder = hldr.(holder.IHolder)
 }
 
-func (self *Inset) SetKey(key string) {
-	self.___key = key
+func (self *Inset) SetId(id string) {
+	self.Id = id
 }
 
-func (self *Inset) Key() string {
-	return self.___key
+func (self *Inset) GetId() string {
+	return self.Id
 }
 
 func (self *Inset) Clone() interface{} {
@@ -40,3 +47,38 @@ func (self *Inset) Clone() interface{} {
 	log.Debug(&self)
 	return &clone
 }
+
+/*
+// Custom JSON marshallind and unmarshalling
+
+func (self *Inset) MarshalJSON() ([]byte, error) {
+	return []byte("\"" + self.GetId() + "\""), nil
+}
+
+func (self *Inset) UnmarshalJSON(data []byte) error {
+
+	d, err := hex.DecodeString(string(data[1 : len(data)-1]))
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	self.Id = string(d)
+	return nil
+}
+
+// Custom BSON marshallind and unmarshalling
+
+func (self *Inset) MarshalBSONValue() (bsontype.Type, []byte, error) {
+	return bson.MarshalValue(self.GetId())
+}
+
+func (self *Inset) UnmarshalBSONValue(t bsontype.Type, data []byte) error {
+	d, err := hex.DecodeString(string(data[4 : len(data)-1]))
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	self.Id = string(d)
+	return nil
+}
+*/

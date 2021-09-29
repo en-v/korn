@@ -1,4 +1,4 @@
-package doublet
+package duplicate
 
 import (
 	"encoding/json"
@@ -6,12 +6,12 @@ import (
 	"reflect"
 )
 
-type Doublet struct {
+type Duplicate struct {
 	holder   string
-	parent   *Doublet
-	key      string
+	parent   *Duplicate
+	id       string
 	fields   map[string]*Field
-	branches map[string]*Doublet
+	branches map[string]*Duplicate
 	diffs    map[string]*Difference
 }
 
@@ -31,17 +31,17 @@ type Difference struct {
 	Path     string
 }
 
-func create(parent *Doublet, key string) *Doublet {
-	return &Doublet{
+func create(parent *Duplicate, key string) *Duplicate {
+	return &Duplicate{
 		parent:   parent,
-		key:      key,
+		id:       key,
 		fields:   make(map[string]*Field),
-		branches: make(map[string]*Doublet),
+		branches: make(map[string]*Duplicate),
 	}
 
 }
 
-func (self *Doublet) ToString() string {
+func (self *Duplicate) ToString() string {
 	b, err := json.MarshalIndent(self, "", "   ")
 	if err != nil {
 		return err.Error()
@@ -49,7 +49,7 @@ func (self *Doublet) ToString() string {
 	return string(b)
 }
 
-func (self *Doublet) NextDifference() *Difference {
+func (self *Duplicate) NextDifference() *Difference {
 	for key, diff := range self.diffs {
 		clone := &diff
 		delete(self.diffs, key)
@@ -59,23 +59,23 @@ func (self *Doublet) NextDifference() *Difference {
 	return nil
 }
 
-func (self *Doublet) GetPath() string {
+func (self *Duplicate) GetPath() string {
 	if self.parent == nil {
-		return "[" + self.key + "]"
+		return "[" + self.id + "]"
 	}
 
 	if self.parent.GetPath() != "" {
-		return self.parent.GetPath() + "." + self.key
+		return self.parent.GetPath() + "." + self.id
 	}
 
-	return self.key
+	return self.id
 }
 
-func (self *Doublet) Name() string {
-	return self.key
+func (self *Duplicate) Name() string {
+	return self.id
 }
 
-func (self *Doublet) getRoot() *Doublet {
+func (self *Duplicate) getRoot() *Duplicate {
 	if self.parent != nil {
 		return self.parent.getRoot()
 	}

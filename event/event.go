@@ -11,7 +11,7 @@ const (
 )
 
 type Event struct {
-	Key    string
+	Id    string
 	Origin interface{} // pointer to origin, always
 	Name   string      // name of changed field
 	Error  error       // an error

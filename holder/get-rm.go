@@ -13,15 +13,15 @@ func (self *_Holder) Get(key string) interface{} {
 	return nil
 }
 
-func (self *_Holder) Remove(key string) error {
-	origin, exists := self.origins[key]
+func (self *_Holder) Remove(id string) error {
+	origin, exists := self.origins[id]
 	if !exists {
-		return errors.New("Elements with current key is not found, key = " + key)
+		return errors.New("Elements with current key is not found, key = " + id)
 	}
 
 	if self.activated && self.reactions.OnRemove != nil {
 		self.reactions.OnRemove(&event.Event{
-			Key:    key,
+			Id:     id,
 			Origin: origin,
 			Name:   event.KIND_REMOVE,
 			Kind:   event.KIND_REMOVE,
@@ -29,8 +29,15 @@ func (self *_Holder) Remove(key string) error {
 		})
 	}
 
-	delete(self.doublets, key)
-	delete(self.origins, key)
+	delete(self.duplicates, id)
+	delete(self.origins, id)
+
+	if self.storage != nil {
+		err := self.storage.Remove(self.name, id)
+		if err != nil {
+			return errors.Wrap(err, "Remove From Storage")
+		}
+	}
 
 	return nil
 }

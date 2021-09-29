@@ -8,14 +8,18 @@ import (
 )
 
 func main() {
-	example_1_single_holder()
-	example_2_multiple_holders()
+	// example #1
+	SingleHolder(2)
+	// example #2
+	MultipleHolders()
 }
 
-func example_1_single_holder() {
+func SingleHolder(storageType int) {
 
 	// create engine kit (engine and holder holder), also you can use "New" for an empty engine create
-	engine, holder := korn.Kit("single")
+	engine, holder, err := korn.Kit("single")
+	catch(err)
+
 	// adding handlers to the holder
 	holder.Bind("add", universalHandler)
 	holder.Bind("remove", universalHandler)
@@ -26,16 +30,32 @@ func example_1_single_holder() {
 	holder.Bind("struct-map-string-changed", universalHandler)
 	holder.Bind("struct-map-int-changed", universalHandler)
 
-	// capture targets (map or single) and activate kor
-	targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
-	err(holder.Capture(targets))
-	err(engine.Activate())
+	err = holder.SetRefo(new("0"))
+	catch(err)
+	// use storages
+	switch storageType {
+	case 1:
+		err = engine.Connect("demo", "")
+	case 2:
+		err = engine.Connect("korn_mongo_demo", "mongodb://localhost")
+	}
+	catch(err)
 
+	err = engine.Restore()
+	catch(err)
+
+	// capture targets (map or single) and activate kor
+	//targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
+	//err = holder.Capture(targets)
+	catch(err)
+	err = engine.Activate()
+	catch(err)
 	// to modificate targets and look at results
+	log.Trace(holder.Get("1"))
 	modify(holder.Get("1").(*Type))
-	modify(targets["4"])
-	err(holder.Remove("2"))
-	err(holder.Capture(new("5")))
+	//modify(targets["4"])
+	//catch(holder.Remove("2"))
+	//catch(holder.Capture(new("5")))
 	modify(holder.Get("1").(*Type))
 	log.Debugw("All", "Length", len(holder.All()))
 	// select
@@ -43,17 +63,23 @@ func example_1_single_holder() {
 		"Struct.Enabled": query.NotEq(false),
 		"Foo":            query.Eq(1.145),
 	}
-	res, e := holder.Select(q) // experimental feature, in-rpogress
-	err(e)
+	res, err := holder.Select(q) // experimental feature, in-rpogress
+	catch(err)
+
+	one := holder.Get("1").(*Type)
+	one.String = "IT WORKS"
+	one.Commit()
 
 	log.Debug(res)
 }
 
-func example_2_multiple_holders() {
+func MultipleHolders() {
 
-	// create kor kit (kor and first holder), also you can use "New" for an empty kor create
-	kor, first := korn.Kit("first")
-	second := kor.Holder("second")
+	// create engine kit (engine and first holder), also you can use "New" for an empty engine create
+	engine, first, err := korn.Kit("first")
+	catch(err)
+	second, err := engine.Holder("second")
+	catch(err)
 	// adding handlers to the holder
 	first.Bind("add", universalHandler)
 	first.Bind("remove", universalHandler)
@@ -70,19 +96,19 @@ func example_2_multiple_holders() {
 	second.Bind("int-changed", universalHandler)
 
 	// capture targets (map or single) and activate kor
-	err(first.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
-	err(second.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
-	err(kor.Activate())
+	catch(first.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
+	catch(second.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
+	catch(engine.Activate())
 
 	// to modificate targets and look at results
 	modify(first.Get("1").(*Type))
-	err(first.Remove("2"))
-	err(second.Remove("2"))
-	err(first.Capture(new("5")))
+	catch(first.Remove("2"))
+	catch(second.Remove("2"))
+	catch(first.Capture(new("5")))
 	modify(first.Get("1").(*Type))
 }
 
-func err(err error) {
+func catch(err error) {
 	if err != nil {
 		panic(err)
 	}
@@ -109,7 +135,7 @@ func modify(t *Type) {
 // ##################################################################
 
 type Type struct {
-	korn.Inset `korn:"-"`
+	korn.Inset `korn:"-" bson:",inline"`
 	String     string `korn:"string-changed"`
 	Int        int    `korn:"int-changed"`
 	Foo        float32
@@ -142,6 +168,6 @@ func new(id string) *Type {
 			},
 		},
 	}
-	t.SetKey(id) // required
+	t.SetId(id) // required
 	return t
 }
