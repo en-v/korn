@@ -55,7 +55,7 @@ err = engine.Activate() // activa the engine, it needs for reactivity works
 user := holder.Get("bob").(*Type) // getting from in-memory base and cast to origin type pointer
 user.Name = "Bob Smith"
 user.Enabled = false
-user.Commit() // require for reactivity magic :-)
+user.Commit() // required for reactivity magic :-)
 ```
 or
 ```go
@@ -69,8 +69,3 @@ For your enjoy you can make a wrapper for the holder and it will cast your types
 **IV.** PROFIT!11
 
 [Full example's code](https://github.com/en-v/korn/blob/main/examples/example.go)
-
-## To Do
-- Query tools (like Mongo style) 
-- MongoDB and simple JSON-files auto sync
-- ...
