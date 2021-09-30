@@ -47,38 +47,3 @@ func (self *Inset) Clone() interface{} {
 	log.Debug(&self)
 	return &clone
 }
-
-/*
-// Custom JSON marshallind and unmarshalling
-
-func (self *Inset) MarshalJSON() ([]byte, error) {
-	return []byte("\"" + self.GetId() + "\""), nil
-}
-
-func (self *Inset) UnmarshalJSON(data []byte) error {
-
-	d, err := hex.DecodeString(string(data[1 : len(data)-1]))
-	if err != nil {
-		log.Error(err)
-		return err
-	}
-	self.Id = string(d)
-	return nil
-}
-
-// Custom BSON marshallind and unmarshalling
-
-func (self *Inset) MarshalBSONValue() (bsontype.Type, []byte, error) {
-	return bson.MarshalValue(self.GetId())
-}
-
-func (self *Inset) UnmarshalBSONValue(t bsontype.Type, data []byte) error {
-	d, err := hex.DecodeString(string(data[4 : len(data)-1]))
-	if err != nil {
-		log.Error(err)
-		return err
-	}
-	self.Id = string(d)
-	return nil
-}
-*/

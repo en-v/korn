@@ -1,7 +1,9 @@
 # The Korn
 
-An in-memory reactivity database engine for Go which can store and restore data to JSON files or MongoDB.
-[ K-O-R-N : Keep, Observe, React, eNgine ]
+An in-memory reactivity database engine which\
+can store and restore data to JSON files or MongoDB.\
+[ K-O-R-N : Keep, Observe, React, eNgine ]\
+Written in Go for Go.\
 
 ## Quick Start
 
@@ -15,9 +17,9 @@ type User struct {
 }
 ```
 
-**II.** Create basic KORN actors: the Engine and the Holder. 
-Bind reactions names and handlers.
-Make and capture observable targets.
+**II.** Create basic KORN actors: the Engine and the Holder.\
+Bind reactions names and handlers.\
+Make and capture observable targets.\
 
 ```go
 engine := korn.Engine("demo")
@@ -29,27 +31,27 @@ holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requ
 holder.Bind("enabledChanged", enabledChangedHandler)
 ```
 
-Add storage if you want.
-JSON-files storage (JSF):
+Add storage if you want.\
+JSON-files storage (JSF):\
 ```go
 err = engine.Connect("demo", "") 
 err = engine.Restore() // restored data to memory
 ```
-Or MongoDB storage:
+Or MongoDB storage:\
 ```go
 err = engine.Connect("korn_mongo_demo", "mongodb://localhost") 
 err = engine.Restore()
 ```
 
-Catch some objects.
-If you use storage then captured objects will store automatically.
+Catch some objects.\
+If you use storage then captured objects will store automatically.\
 ```go
 users := map[string]*User{"root": user("root"), "bob": user("bob"), "guest": nil}
 err = holder.Capture(users) // capture targets
 err = engine.Activate() // activa the engine, it needs for reactivity works
 ```
 
-**III.** To do somethig with any one target. Or many :)
+**III.** To do somethig with any one target. Or many :)\
 
 ```go
 user := holder.Get("bob").(*Type) // getting from in-memory base and cast to origin type pointer
@@ -64,7 +66,7 @@ if err != nil {
     panic(err)
 }
 ```
-For your enjoy you can make a wrapper for the holder and it will cast your types easy. 
+For your enjoy you can make a wrapper for the holder and it provides your types casting easy. 
 
 **IV.** PROFIT!11
 
