@@ -1,9 +1,3 @@
-# The Korn
-
-An in-memory reactivity database engine which\
-can store and restore data to/from JSON files or MongoDB.\
-Written in Go for Go.
-
 ```
 ██╗░░██╗░█████╗░██████╗░███╗░░██╗
 ██║░██╔╝██╔══██╗██╔══██╗████╗░██║
@@ -12,6 +6,11 @@ Written in Go for Go.
 ██║░╚██╗╚█████╔╝██║░░██║██║░╚███║
 ╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚═╝░░╚══╝
 ```
+
+An in-memory reactivity database engine which\
+can store and restore data to/from JSON files or MongoDB.\
+Written in Go for Go.
+
 **K-O-R-N : Keep, Observe, React, eNgine**
 
 ## Quick Start
