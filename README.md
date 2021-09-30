@@ -14,7 +14,8 @@ KORN = Keep + Observe + React + eNgine
 ```
 # Quick Start [ 5 steps ]
 
-### 1. Define some observable structure
+### 1. Defining
+Define your own observable structure or structures.\
 Nested structures are allowed.
 ```go
 type User struct {
@@ -41,15 +42,18 @@ holder.Bind("remove", removeHandler) // required, the "remove" too
 holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requried
 holder.Bind("enabledChanged", enabledChangedHandler)
 ```
+You can use more than one holder. Holders count is unlimited but you have to remember that name of holder must be unique.\
+If you have many types of data then your scenario is "one holder per one type".
 
 ### 3. Don't forget about data storing
-Add one of two kinds storages if you need.\
-One. JSON-files storage (JSF):
+Add one of two kinds storages if you need. The storage using is optional.\
+You can use NO data storage then your data will be lost after your app close (it is useful case for temporary data).\
+**JSF** - storage based on simle JSON files (one file per object):
 ```go
 engine.Connect("demo", "") 
 engine.Restore() // restored data to memory
 ```
-Two. MongoDB storage:
+**MDB** - MongoDB storage:
 ```go
 engine.Connect("korn_mongo_demo", "mongodb://localhost") 
 engine.Restore()  // restored data to memory
