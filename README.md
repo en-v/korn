@@ -12,7 +12,7 @@ Written in Go for Go.
 ```
 KORN = Keep + Observe + React + eNgine
 ```
-# Quick Start :: Just five steps
+# Quick Start [ 5 steps ]
 
 ### 1. Define some observable structure
 Nested structures are allowed.
@@ -23,8 +23,9 @@ type User struct {
     Enabled bool   `korn:"enabledChanged"`
 }
 ```
-As weel the Inseet contains Id and Updated fields. Id field has BSON-tag "_id". Updated field contains last commint time.\
-Warning: you cannot to add your own Id and Updated fields to your structure. It makes a panic.
+As weel the Inseet contains Id and Updated fields. Id field has BSON-tag "_id".\ 
+Updated field contains last commint date and time.\
+*Warning: you cannot to add your own Id and Updated fields to your structure. It makes a panic.*
 
 ### 2. Init Korn
 Create basic KORN actors: the Engine and the Holder.\
