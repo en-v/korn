@@ -1,8 +1,6 @@
 package holder
 
 import (
-	"reflect"
-
 	"github.com/en-v/korn/duplicate"
 	"github.com/en-v/korn/event"
 	"github.com/en-v/korn/storage"
@@ -22,30 +20,16 @@ type _Holder struct {
 	storage    storage.IStorage
 }
 
-type Reference struct {
-	Type    reflect.Type
-	Name    string
-	Pointer reflect.Type
-}
-
 //Make - create a new instance of holder
 func Make(name string, referenceObjectNotPointer interface{}) (*_Holder, error) {
-	if referenceObjectNotPointer == nil {
-		return nil, errors.New("Reference object can't to be a nil pointer")
-	}
 
-	refType := reflect.TypeOf(referenceObjectNotPointer)
-	if refType.Kind() != reflect.Struct {
-		return nil, errors.New("Reference object has to be a structure only")
+	ref, err := makeRef(referenceObjectNotPointer)
+	if err != nil {
+		return nil, errors.Wrap(err, "Make Reference")
 	}
-	refPointer := reflect.TypeOf(reflect.New(refType).Interface())
 
 	return &_Holder{
-		ref: &Reference{
-			Type:    refType,
-			Pointer: refPointer,
-			Name:    refType.String(),
-		},
+		ref:        ref,
 		activated:  false,
 		name:       name,
 		reactions:  emptyReactions(),

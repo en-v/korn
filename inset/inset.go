@@ -1,5 +1,7 @@
 package inset
 
+const NAME = "Inset"
+
 type InsetInterface interface {
 	GetId() string
 	SetId(string)
