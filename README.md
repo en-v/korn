@@ -24,13 +24,13 @@ type User struct {
     Enabled bool   `korn:"enabledChanged"`
 }
 ```
-Use **korn.Inset** as embedded part of root structure. Tags `korn:"-" bson:",inline"` are requred.\
-If you forget **korn.Inset** or tags than your app will catch a panic.\
+Use **korn.Inset** as embedded part of the root structure. Tags `korn:"-" bson:",inline"` are required.\
+If you forget **korn.Inset** or tags then your app will catch a panic.\
 Also **korn.Inset** contains **Id** and **Updated** fields.\
 **Id** field has BSON-tag "_id" and "string" type.\ 
-**Updated** field contains last commint date and time.\
+**Updated** field contains the last commit date and time.\
 *Warning: do NOT add your own Id and Updated fields to your structure. It will cause panic.*\
-Tag `korn` contains an action name which will invoke when the field value changes.
+Tag `korn` contains an action name that will invoke when the field value changes.
 
 ### 2. Init Korn
 Create basic KORN actors: Engine and Holder.\
@@ -46,14 +46,14 @@ holder.Bind("remove", removeHandler)
 holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requried
 holder.Bind("enabledChanged", enabledChangedHandler)
 ```
-Actions `add` and `remove` nust always be defined and binded.
+Actions `add` and `remove` must always be defined and bound.
 You can use more than one holder.\ 
-Holders count is unlimited but you have to remember that name of holder must be unique.\
+Holders count is unlimited but you have to remember that name of the holder must be unique.\
 If you have many types of data then your scenario is "one holder per one type".
 
 ### 3. Don't forget about data storing
-Add one of two kinds storages if you need. The storage using is optional.\
-You can use NO data storage then your data will be lost after your app close (it is useful case for temporary data).
+Add one of two kinds storage if you need it. The storage using is optional.\
+You can use NO data storage then your data will be lost after your app close (it is a useful case for temporary data).
 
 **JSF** - storage based on simle JSON files (one file per object):
 ```go
@@ -65,7 +65,7 @@ engine.Restore()
 engine.Connect("korn_mongo_demo", "mongodb://localhost") 
 engine.Restore() 
 ```
-Call `Restore()` method if you need to restore last saved data from the storage.
+Call the `Restore()` method if you need to restore the last saved data from the storage.
 
 ### 4. Make and capture your data
 Create and catch some data objects.\
@@ -81,7 +81,7 @@ engine.Activate() // activate the engine > reactivity enabling
 ```
 
 ### 5. Perform
-To do somethig with any one target. Or many :)
+To do something with any one target. Or many :)
 
 ```go
 user := holder.Get("bob").(*User) // getting from the holder and cast to origin type pointer
@@ -98,7 +98,7 @@ if err != nil {
     panic(err)
 }
 ```
-For your enjoy you can make a wrapper for the holder and it provides your types casting easy. \
+For your enjoyment you can make a wrapper for the holder and it provides your type casting easy. \
 As well all package methods return an error value and your code will stay clean ever :)
 
 ***
