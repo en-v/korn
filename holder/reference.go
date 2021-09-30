@@ -26,6 +26,7 @@ func makeRef(obj interface{}) (*Reference, error) {
 		return nil, errors.New("Reference object has to be a structure only, " + typeName)
 	}
 
+	// INSET FEILD
 	insetField, found := refType.FieldByName(inset.NAME)
 	if !found {
 		return nil, errors.New("Embedded korn.Inset not found in refernce object, " + typeName)
@@ -47,6 +48,36 @@ func makeRef(obj interface{}) (*Reference, error) {
 
 	if kornTag != "-" {
 		return nil, errors.New("Embedded korn.Inset have to have 'bson' with the value '-', " + typeName)
+	}
+
+	// ID FIELD
+	idField, found := refType.FieldByName("Id")
+	if !found {
+		return nil, errors.New("Id field not found in refernce object, " + typeName)
+	}
+
+	idRequiredTag, found := idField.Tag.Lookup(inset.REQUIRED)
+	if !found {
+		return nil, errors.New("Id field have to have 'required' tag, " + typeName)
+	}
+
+	if idRequiredTag != "true" {
+		return nil, errors.New("Id field have to have 'required' tag value 'true', " + typeName)
+	}
+
+	// UPDATE FIELD
+	updateField, found := refType.FieldByName("Updated")
+	if !found {
+		return nil, errors.New("Update field not found in refernce object, " + typeName)
+	}
+
+	updateRequiredTag, found := updateField.Tag.Lookup(inset.REQUIRED)
+	if !found {
+		return nil, errors.New("Update field have to have 'required' tag, " + typeName)
+	}
+
+	if updateRequiredTag != "true" {
+		return nil, errors.New("Update field have to have 'required' tag value 'true', " + typeName)
 	}
 
 	refPointer := reflect.TypeOf(reflect.New(refType).Interface())

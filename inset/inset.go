@@ -1,6 +1,7 @@
 package inset
 
 const NAME = "Inset"
+const REQUIRED = "required"
 
 type InsetInterface interface {
 	GetId() string

@@ -10,8 +10,8 @@ import (
 
 type Inset struct {
 	holder  holder.IHolder
-	Id      string    `bson:"_id" json:"id"`
-	Updated time.Time `bson:"_updated" json:"_updated"`
+	Id      string    `bson:"_id" json:"id" required:"true"`
+	Updated time.Time `bson:"_updated" json:"_updated" required:"true"`
 }
 
 func (self *Inset) Commit() error {
