@@ -15,23 +15,44 @@ type _Holder struct {
 	activated  bool
 	name       string
 	reactions  *Reactions
-	reftype    reflect.Type
+	ref        *Reference
 	origins    map[string]interface{}
 	duplicates map[string]*duplicate.Duplicate
 	errch      chan error
 	storage    storage.IStorage
 }
 
+type Reference struct {
+	Type    reflect.Type
+	Name    string
+	Pointer reflect.Type
+}
+
 //Make - create a new instance of holder
-func Make(name string) *_Holder {
+func Make(name string, referenceObjectNotPointer interface{}) (*_Holder, error) {
+	if referenceObjectNotPointer == nil {
+		return nil, errors.New("Reference object can't to be a nil pointer")
+	}
+
+	refType := reflect.TypeOf(referenceObjectNotPointer)
+	if refType.Kind() != reflect.Struct {
+		return nil, errors.New("Reference object has to be a structure only")
+	}
+	refPointer := reflect.TypeOf(reflect.New(refType).Interface())
+
 	return &_Holder{
+		ref: &Reference{
+			Type:    refType,
+			Pointer: refPointer,
+			Name:    refType.String(),
+		},
 		activated:  false,
 		name:       name,
 		reactions:  emptyReactions(),
 		errch:      make(chan error),
 		origins:    make(map[string]interface{}),
 		duplicates: make(map[string]*duplicate.Duplicate),
-	}
+	}, nil
 }
 
 func (self *_Holder) Bind(name string, handler event.Handler) {

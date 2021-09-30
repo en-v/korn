@@ -9,7 +9,7 @@ An in-memory reactivity database engine for Go which can store and restore data 
    
 ```go
 type User struct {
-    korn.Inset // required, the Inset is needed for communication between the Engine and current object
+    korn.Inset `korn:"-" bson:",inline"` // required, the Inset is needed for communication between the Engine and current object
     Name    string `korn:"nameChanged"` // a "korn" tag defines an event name which will be invoked after changing
     Enabled bool   `korn:"enabledChanged"`
 }
@@ -20,7 +20,8 @@ Bind reactions names and handlers.
 Make and capture observable targets.
 
 ```go
-engine, holder, err := korn.Kit("users")
+engine := korn.Engine("demo")
+holder, err := engine.Holder("users", User{})
 
 holder.Bind("add", addHandler) // required, the "add" event have to be defined
 holder.Bind("remove", removeHandler) // required, the "remove" too
@@ -29,14 +30,19 @@ holder.Bind("enabledChanged", enabledChangedHandler)
 ```
 
 Add storage if you want.
+JSON-files storage (JSF):
 ```go
-err = holder.SetRefo(new("0")) // it needs to catch type info, temporary decision, 
-err = engine.Connect("demo", "") // JSON-files storage - JFS
-// or
-err = engine.Connect("korn_mongo_demo", "mongodb://localhost")
+err = engine.Connect("demo", "") 
+err = engine.Restore() // restored data to memory
+```
+Or MongoDB storage:
+```go
+err = engine.Connect("korn_mongo_demo", "mongodb://localhost") 
 err = engine.Restore()
 ```
 
+Catch some objects.
+If you use storage then captured objects will store automatically.
 ```go
 users := map[string]*User{"root": user("root"), "bob": user("bob"), "guest": nil}
 err = holder.Capture(users) // capture targets

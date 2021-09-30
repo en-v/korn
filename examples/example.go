@@ -17,7 +17,8 @@ func main() {
 func SingleHolder(storageType int) {
 
 	// create engine kit (engine and holder holder), also you can use "New" for an empty engine create
-	engine, holder, err := korn.Kit("single")
+	engine := korn.Engine("demo")
+	holder, err := engine.Holder("single", Type{})
 	catch(err)
 
 	// adding handlers to the holder
@@ -30,8 +31,6 @@ func SingleHolder(storageType int) {
 	holder.Bind("struct-map-string-changed", universalHandler)
 	holder.Bind("struct-map-int-changed", universalHandler)
 
-	err = holder.SetRefo(new("0"))
-	catch(err)
 	// use storages
 	switch storageType {
 	case 1:
@@ -70,15 +69,19 @@ func SingleHolder(storageType int) {
 	one.String = "IT WORKS"
 	one.Commit()
 
+	one.String = "IT WORKS AGAIN!"
+	one.Commit()
+
 	log.Debug(res)
 }
 
 func MultipleHolders() {
 
 	// create engine kit (engine and first holder), also you can use "New" for an empty engine create
-	engine, first, err := korn.Kit("first")
+	engine := korn.Engine("demo2")
+	first, err := engine.Holder("first", Type{})
 	catch(err)
-	second, err := engine.Holder("second")
+	second, err := engine.Holder("second", Type{})
 	catch(err)
 	// adding handlers to the holder
 	first.Bind("add", universalHandler)

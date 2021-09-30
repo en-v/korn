@@ -6,7 +6,6 @@ import (
 	"github.com/en-v/korn/duplicate"
 	"github.com/en-v/korn/event"
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/log"
 	"github.com/pkg/errors"
 )
 
@@ -28,6 +27,10 @@ func (self *_Holder) Capture(t interface{}) error {
 }
 
 func (self *_Holder) captureStruct(value reflect.Value) (err error) {
+
+	if value.Type() != self.ref.Pointer {
+		return errors.New("Type of captured object have to be [" + self.ref.Name + "] not [" + value.Type().String() + "]")
+	}
 
 	id := value.Interface().(inset.InsetInterface).GetId()
 	_, exists := self.origins[id]
@@ -62,20 +65,28 @@ func (self *_Holder) captureStruct(value reflect.Value) (err error) {
 	return nil
 }
 
-func (self *_Holder) captureMap(value reflect.Value) (err error) {
-	for _, key := range value.MapKeys() {
-		if !value.MapIndex(key).IsNil() {
-			item := value.MapIndex(key).Interface().(inset.InsetInterface)
-			_, exists := self.origins[item.GetId()]
+func (self *_Holder) captureMap(mapValue reflect.Value) (err error) {
+	for _, key := range mapValue.MapKeys() {
+		if !mapValue.MapIndex(key).IsNil() {
+
+			itemValue := mapValue.MapIndex(key)
+			itemType := reflect.TypeOf(itemValue.Interface())
+
+			if itemType != self.ref.Pointer {
+				return errors.New("Type of captured object have to be [" + self.ref.Name + "] not [" + itemType.String() + "]")
+			}
+
+			itemInset := itemValue.Interface().(inset.InsetInterface)
+			_, exists := self.origins[itemInset.GetId()]
 			if exists {
-				return errors.New("Element is alredy captured, key = " + item.GetId())
+				return errors.New("Element is alredy captured, key = " + itemInset.GetId())
 			}
 		}
 	}
 
-	for _, keyValue := range value.MapKeys() {
-		if !value.MapIndex(keyValue).IsNil() {
-			item := value.MapIndex(keyValue).Interface()
+	for _, keyValue := range mapValue.MapKeys() {
+		if !mapValue.MapIndex(keyValue).IsNil() {
+			item := mapValue.MapIndex(keyValue).Interface()
 			ins := item.(inset.InsetInterface)
 			id := ins.GetId()
 
@@ -87,7 +98,6 @@ func (self *_Holder) captureMap(value reflect.Value) (err error) {
 				}
 			}
 
-			log.Trace(id)
 			self.origins[id] = item
 			self.duplicates[id], err = duplicate.Make(ins, self.name)
 			if err != nil {
@@ -97,7 +107,7 @@ func (self *_Holder) captureMap(value reflect.Value) (err error) {
 			if self.activated && self.reactions.OnAdd != nil {
 				self.reactions.OnAdd(&event.Event{
 					Id:     id,
-					Origin: value.Interface(),
+					Origin: mapValue.Interface(),
 					Name:   event.KIND_ADD,
 					Kind:   event.KIND_ADD,
 					Holder: self.name,

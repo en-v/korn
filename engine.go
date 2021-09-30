@@ -8,24 +8,47 @@ import (
 	"github.com/pkg/errors"
 )
 
+//IEngine - reactivity framework for Go
+type IEngine interface {
+	//Active - activate the kor instance
+	Activate() error
+	//Shutdown - deactivate the kor instance
+	Shutdown()
+	//Holder - get an holder, if a holder is not found than will make a new named holder
+	//As weel ypu have to set reference object (struct empty instance, not pointer)
+	Holder(string, interface{}) (holder.IHolder, error)
+	//Connect - connect to storage (JSON-files or MongoDB)
+	//1st param - name, 2nd param - path or connection string, 3nd param - model example
+	Connect(string, string) error
+	//Restore - restore data from storage into memory
+	Restore() error
+	//Reset - reset all data from storage and memory
+	Reset() error
+}
+
 type _Engine struct {
+	name    string
 	storage storage.IStorage
 	holders map[string]holder.IHolder
 }
 
-func makeEngine() *_Engine {
+func makeEngine(name string) *_Engine {
 	return &_Engine{
+		name:    name,
 		holders: make(map[string]holder.IHolder),
 	}
 }
 
-func (self *_Engine) Holder(name string) (holder.IHolder, error) {
+func (self *_Engine) Holder(name string, referenceObjectNotPointer interface{}) (holder.IHolder, error) {
 	obs, exists := self.holders[name]
 	if exists {
 		return obs, nil
 	}
 
-	new := holder.Make(name)
+	new, err := holder.Make(name, referenceObjectNotPointer)
+	if err != nil {
+		return nil, errors.Wrap(err, "Make Holder")
+	}
 
 	if self.storage != nil {
 		err := new.SetStore(self.storage)

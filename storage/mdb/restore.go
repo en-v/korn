@@ -5,7 +5,6 @@ import (
 	"reflect"
 
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/log"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -29,23 +28,21 @@ func (self *MDB) Restore(collectionName string, reft reflect.Type) (map[string]i
 	res := make(map[string]interface{}, int(cnt))
 	ctx := context.TODO()
 
-	log.Trace(reft)
-
 	defer cursor.Close(ctx)
 	for cursor.Next(ctx) {
 		item := reflect.New(reft).Interface()
+		
 		err = cursor.Decode(item)
 		if err != nil {
 			return nil, errors.Wrap(err, "Decode")
 		}
+
 		iset, cast := item.(inset.InsetInterface)
 		if !cast {
 			return nil, errors.New("Restored object cant to be casted to InsetInterface")
 		}
 		res[iset.GetId()] = item
 
-		log.Trace(item)
 	}
-	log.Trace(res)
 	return res, nil
 }

@@ -1,15 +1,13 @@
 package holder
 
 import (
-	"reflect"
-
 	"github.com/en-v/korn/inset"
 	"github.com/en-v/korn/storage"
 	"github.com/pkg/errors"
 )
 
 func (self *_Holder) SetStore(s storage.IStorage) error {
-	if self.reftype == nil {
+	if self.ref.Type == nil {
 		return errors.New("You have to set reference object before store setting, Holder = " + self.name)
 	}
 
@@ -21,18 +19,9 @@ func (self *_Holder) SetStore(s storage.IStorage) error {
 	return nil
 }
 
-func (self *_Holder) SetRefo(refobj interface{}) error {
-	refo, cast := refobj.(inset.InsetInterface)
-	if !cast {
-		return errors.New("Reference Object cant to be casted to InsetInterface")
-	}
-	self.reftype = reflect.ValueOf(refo).Elem().Type()
-	return nil
-}
-
 func (self *_Holder) Restore() error {
 	if self.storage != nil {
-		items, err := self.storage.Restore(self.name, self.reftype)
+		items, err := self.storage.Restore(self.name, self.ref.Type)
 		if err != nil {
 			return errors.Wrap(err, "Restore on Holder")
 		}

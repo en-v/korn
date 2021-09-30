@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/log"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -29,11 +28,8 @@ func (self *MDB) Dump(collectionName string, obj inset.InsetInterface) error {
 	}
 
 	if res.MatchedCount == 1 {
-		log.Trace(obj)
 		return nil
 	}
 
-	log.Trace(res)
 	return errors.New("Something went wrong")
-
 }

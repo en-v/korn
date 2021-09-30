@@ -34,9 +34,6 @@ type IHolder interface {
 	//SetStore a storage
 	SetStore(storage.IStorage) error
 
-	//SetRefo - set reference object
-	SetRefo(interface{}) error
-
 	//Activate - activate the holder
 	//No need to call self method cos the kor will call it
 	Activate() error
