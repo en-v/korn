@@ -25,8 +25,8 @@ type Field struct {
 type Difference struct {
 	Reaction string
 	Name     string
-	Old      interface{}
-	New      interface{}
+	Previous      interface{}
+	Current      interface{}
 	Holder   string
 	Path     string
 }

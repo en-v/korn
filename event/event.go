@@ -16,8 +16,8 @@ type Event struct {
 	Name   string      // name of changed field
 	Error  error       // an error
 	Kind   Kind        // kind of event: add, remove, change
-	Old    interface{} // pointer to old value
-	New    interface{} // pointer to new value
+	Previous    interface{} // pointer to old value
+	Current    interface{} // pointer to new value
 	Holder string
 	Path   string
 }

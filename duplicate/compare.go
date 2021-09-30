@@ -62,8 +62,8 @@ func (self *Duplicate) compare(diffsOut map[string]*Difference, newSnap *Duplica
 			diffsOut[old.Reaction] = &Difference{
 				Reaction: old.Reaction,
 				Name:     fieldName,
-				Old:      old.Value,
-				New:      new.Value,
+				Previous:      old.Value,
+				Current:      new.Value,
 				Holder:   self.getRoot().holder,
 				Path:     self.GetPath() + "." + fieldName,
 			}

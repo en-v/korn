@@ -27,14 +27,14 @@ func (self *_Holder) compare(shot *duplicate.Duplicate, target inset.InsetInterf
 		}
 
 		reaction.Handler(&event.Event{
-			Origin: target,
-			Name:   diff.Name,
-			Old:    diff.Old,
-			New:    diff.New,
-			Holder: diff.Holder,
-			Path:   diff.Path,
-			Id:    target.GetId(),
-			Kind:   event.KIND_CHANGE,
+			Origin:   target,
+			Name:     diff.Name,
+			Previous: diff.Previous,
+			Current:  diff.Current,
+			Holder:   diff.Holder,
+			Path:     diff.Path,
+			Id:       target.GetId(),
+			Kind:     event.KIND_CHANGE,
 		})
 	}
 }

@@ -115,7 +115,7 @@ func catch(err error) {
 }
 
 func universalHandler(event *event.Event) {
-	log.Debugw(string(event.Kind), "Field", event.Name, "Old", event.Old, "New", event.New, "holder", event.Holder, "Path", event.Path)
+	log.Debugw(string(event.Kind), "Field", event.Name, "Old", event.Previous, "New", event.Current, "holder", event.Holder, "Path", event.Path)
 }
 
 func modify(t *Type) {
