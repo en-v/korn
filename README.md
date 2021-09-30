@@ -7,13 +7,12 @@
 ╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚═╝░░╚══╝
 ```
 
-Шn-memory reactivity database engine which\
-can store and restore data to/from JSON files or MongoDB.\
+In-memory reactivity database engine which can store and restore data to/from JSON files or MongoDB.\
 Written in Go for Go.
 ```
 KORN = Keep + Observe + React + eNgine
 ```
-## Quick Start
+## Quick Start - five steps
 
 **I.** Define some observable structure.
    
@@ -39,19 +38,19 @@ holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requ
 holder.Bind("enabledChanged", enabledChangedHandler)
 ```
 
-Add storage if you want.\
-JSON-files storage (JSF):
+**III.** Add one of two kinds storages if you need.\
+One. JSON-files storage (JSF):
 ```go
 engine.Connect("demo", "") 
 engine.Restore() // restored data to memory
 ```
-Or MongoDB storage:\
+Two. MongoDB storage:
 ```go
 engine.Connect("korn_mongo_demo", "mongodb://localhost") 
-engine.Restore()
+engine.Restore()  // restored data to memory
 ```
 
-Catch some objects.\
+**IV.** Catch some objects.\
 If you use storage then captured objects will store automatically.
 ```go
 users := map[string]*User{
@@ -63,7 +62,7 @@ holder.Capture(users) // capture targets
 engine.Activate() // activate the engine > reactivity enabling
 ```
 
-**III.** To do somethig with any one target. Or many :)
+**V.** To do somethig with any one target. Or many :)
 
 ```go
 user := holder.Get("bob").(*User) // getting from the holder and cast to origin type pointer
@@ -82,6 +81,6 @@ if err != nil {
 For your enjoy you can make a wrapper for the holder and it provides your types casting easy. \
 As well all package methods return an error value and your code will stay clean ever :)
 
-**IV.** PROFIT!11
+***
 
-[Full example's code](https://github.com/en-v/korn/blob/main/examples/example.go)
+[Full example code](https://github.com/en-v/korn/blob/main/examples/example.go)
