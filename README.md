@@ -2,8 +2,10 @@
 
 An in-memory reactivity database engine which\
 can store and restore data to JSON files or MongoDB.\
-[ K-O-R-N : Keep, Observe, React, eNgine ]\
 Written in Go for Go.\
+\
+**K-O-R-N : Keep, Observe, React, eNgine**
+
 
 ## Quick Start
 
@@ -19,7 +21,7 @@ type User struct {
 
 **II.** Create basic KORN actors: the Engine and the Holder.\
 Bind reactions names and handlers.\
-Make and capture observable targets.\
+Make and capture observable targets.
 
 ```go
 engine := korn.Engine("demo")
@@ -32,7 +34,7 @@ holder.Bind("enabledChanged", enabledChangedHandler)
 ```
 
 Add storage if you want.\
-JSON-files storage (JSF):\
+JSON-files storage (JSF):
 ```go
 err = engine.Connect("demo", "") 
 err = engine.Restore() // restored data to memory
@@ -44,14 +46,14 @@ err = engine.Restore()
 ```
 
 Catch some objects.\
-If you use storage then captured objects will store automatically.\
+If you use storage then captured objects will store automatically.
 ```go
 users := map[string]*User{"root": user("root"), "bob": user("bob"), "guest": nil}
 err = holder.Capture(users) // capture targets
 err = engine.Activate() // activa the engine, it needs for reactivity works
 ```
 
-**III.** To do somethig with any one target. Or many :)\
+**III.** To do somethig with any one target. Or many :)
 
 ```go
 user := holder.Get("bob").(*Type) // getting from in-memory base and cast to origin type pointer
