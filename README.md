@@ -12,10 +12,10 @@ Written in Go for Go.
 ```
 KORN = Keep + Observe + React + eNgine
 ```
-## Quick Start - five steps
+# Quick Start :: Just five steps
 
-### I. Define some observable structure.
-   
+### 1. Define some observable structure
+Nested structures are allowed.
 ```go
 type User struct {
     korn.Inset `korn:"-" bson:",inline"` // required, the Inset is needed for communication between the Engine and current object
@@ -26,7 +26,7 @@ type User struct {
 As weel the Inseet contains Id and Updated fields. Id field has BSON-tag "_id". Updated field contains last commint time.\
 Warning: you cannot to add your own Id and Updated fields to your structure. It makes a panic.
 
-### II. Init Korn
+### 2. Init Korn
 Create basic KORN actors: the Engine and the Holder.\
 Bind reactions names and handlers.\
 Make and capture observable targets.
@@ -41,7 +41,7 @@ holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requ
 holder.Bind("enabledChanged", enabledChangedHandler)
 ```
 
-### III. Don't forget about data storing
+### 3. Don't forget about data storing
 Add one of two kinds storages if you need.\
 One. JSON-files storage (JSF):
 ```go
@@ -54,7 +54,7 @@ engine.Connect("korn_mongo_demo", "mongodb://localhost")
 engine.Restore()  // restored data to memory
 ```
 
-### IV. Make And Capture Data
+### 4. Make and capture your data
 Create and catch some data objects.\
 If you are using storage then captured objects will store automatically.
 ```go
@@ -67,7 +67,7 @@ holder.Capture(users) // capture targets
 engine.Activate() // activate the engine > reactivity enabling
 ```
 
-### V. Perform
+### 5. Perform
 To do somethig with any one target. Or many :)
 
 ```go
