@@ -19,17 +19,21 @@ Define your own observable structure or structures.\
 Nested structures are allowed.
 ```go
 type User struct {
-    korn.Inset `korn:"-" bson:",inline"` // required, the Inset is needed for communication between the Engine and current object
-    Name    string `korn:"nameChanged"` // a "korn" tag defines an event name which will be invoked after changing
+    korn.Inset `korn:"-" bson:",inline"`
+    Name    string `korn:"nameChanged"`
     Enabled bool   `korn:"enabledChanged"`
 }
 ```
-As weel the Inseet contains Id and Updated fields. Id field has BSON-tag "_id".\ 
-Updated field contains last commint date and time.\
-*Warning: you cannot to add your own Id and Updated fields to your structure. It makes a panic.*
+Use **korn.Inset** as embedded part of root structure. Tags `korn:"-" bson:",inline"` are requred.\
+If you forget **korn.Inset** or tags than your app will catch a panic.\
+Also **korn.Inset** contains **Id** and **Updated** fields.\
+**Id** field has BSON-tag "_id" and "string" type.\ 
+**Updated** field contains last commint date and time.\
+*Warning: do NOT add your own Id and Updated fields to your structure. It will cause panic.*\
+Tag `korn` contains an action name which will invoke when the field value changes.
 
 ### 2. Init Korn
-Create basic KORN actors: the Engine and the Holder.\
+Create basic KORN actors: Engine and Holder.\
 Bind reactions names and handlers.\
 Make and capture observable targets.
 
@@ -37,27 +41,31 @@ Make and capture observable targets.
 engine := korn.Engine("demo")
 holder, err := engine.Holder("users", User{})
 
-holder.Bind("add", addHandler) // required, the "add" event have to be defined
-holder.Bind("remove", removeHandler) // required, the "remove" too
+holder.Bind("add", addHandler) 
+holder.Bind("remove", removeHandler) 
 holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requried
 holder.Bind("enabledChanged", enabledChangedHandler)
 ```
-You can use more than one holder. Holders count is unlimited but you have to remember that name of holder must be unique.\
+Actions `add` and `remove` nust always be defined and binded.
+You can use more than one holder.\ 
+Holders count is unlimited but you have to remember that name of holder must be unique.\
 If you have many types of data then your scenario is "one holder per one type".
 
 ### 3. Don't forget about data storing
 Add one of two kinds storages if you need. The storage using is optional.\
-You can use NO data storage then your data will be lost after your app close (it is useful case for temporary data).\
+You can use NO data storage then your data will be lost after your app close (it is useful case for temporary data).
+
 **JSF** - storage based on simle JSON files (one file per object):
 ```go
 engine.Connect("demo", "") 
-engine.Restore() // restored data to memory
+engine.Restore() 
 ```
 **MDB** - MongoDB storage:
 ```go
 engine.Connect("korn_mongo_demo", "mongodb://localhost") 
-engine.Restore()  // restored data to memory
+engine.Restore() 
 ```
+Call `Restore()` method if you need to restore last saved data from the storage.
 
 ### 4. Make and capture your data
 Create and catch some data objects.\
@@ -82,6 +90,7 @@ user.Name = "Bob Smith" // do something
 user.Enabled = false // do something else
 user.Commit() // required for reactivity magic and storing :-)
 ```
+`Commit()` method is needed to cause reactions and save the changes.
 Also you can catch errors from reactions.
 ```go
 err := user.Commit() 
