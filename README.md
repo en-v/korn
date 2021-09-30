@@ -1,11 +1,18 @@
 # The Korn
 
 An in-memory reactivity database engine which\
-can store and restore data to JSON files or MongoDB.\
+can store and restore data to/from JSON files or MongoDB.\
 Written in Go for Go.\
 \
-**K-O-R-N : Keep, Observe, React, eNgine**
 
+██╗░░██╗░█████╗░██████╗░███╗░░██╗\
+██║░██╔╝██╔══██╗██╔══██╗████╗░██║\
+█████═╝░██║░░██║██████╔╝██╔██╗██║\
+██╔═██╗░██║░░██║██╔══██╗██║╚████║\
+██║░╚██╗╚█████╔╝██║░░██║██║░╚███║\
+╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚═╝░░╚══╝\
+
+**K-O-R-N : Keep, Observe, React, eNgine**
 
 ## Quick Start
 
@@ -36,39 +43,45 @@ holder.Bind("enabledChanged", enabledChangedHandler)
 Add storage if you want.\
 JSON-files storage (JSF):
 ```go
-err = engine.Connect("demo", "") 
-err = engine.Restore() // restored data to memory
+engine.Connect("demo", "") 
+engine.Restore() // restored data to memory
 ```
 Or MongoDB storage:\
 ```go
-err = engine.Connect("korn_mongo_demo", "mongodb://localhost") 
-err = engine.Restore()
+engine.Connect("korn_mongo_demo", "mongodb://localhost") 
+engine.Restore()
 ```
 
 Catch some objects.\
 If you use storage then captured objects will store automatically.
 ```go
-users := map[string]*User{"root": user("root"), "bob": user("bob"), "guest": nil}
-err = holder.Capture(users) // capture targets
-err = engine.Activate() // activa the engine, it needs for reactivity works
+users := map[string]*User{
+    "root": user("root"), 
+    "bob": user("bob"), 
+    "guest": nil,
+}
+holder.Capture(users) // capture targets 
+engine.Activate() // activate the engine > reactivity enabling
 ```
 
 **III.** To do somethig with any one target. Or many :)
 
 ```go
-user := holder.Get("bob").(*Type) // getting from in-memory base and cast to origin type pointer
-user.Name = "Bob Smith"
-user.Enabled = false
-user.Commit() // required for reactivity magic :-)
+user := holder.Get("bob").(*User) // getting from the holder and cast to origin type pointer
+user.Name = "Bob Smith" // do something
+...
+user.Enabled = false // do something else
+user.Commit() // required for reactivity magic and storing :-)
 ```
-or
+Also you can catch errors from reactions.
 ```go
 err := user.Commit() 
 if err != nil {
     panic(err)
 }
 ```
-For your enjoy you can make a wrapper for the holder and it provides your types casting easy. 
+For your enjoy you can make a wrapper for the holder and it provides your types casting easy. \
+As well all package methods return an error value and your code will stay clean ever :)
 
 **IV.** PROFIT!11
 
