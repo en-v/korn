@@ -49,6 +49,9 @@ func makedoublet(target interface{}, parent *Duplicate, key string) (*Duplicate,
 		default:
 			tag, tagexists := fstruct.Tag.Lookup(core.TAG)
 			log.Trace(fstruct.Name)
+			log.Trace(fstruct.Type)
+			log.Trace(fvalue.Kind())
+
 			if tagexists {
 				if err = event.IsNotReservedActionName(tag); err != nil {
 					return nil, err
