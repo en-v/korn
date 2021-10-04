@@ -1,1 +1,1 @@
-{"id":"4","_updated":"2021-09-28T21:12:31.010251+03:00","String":"NEW_VAL","Int":2,"Foo":6.77,"Struct":{"Enabled":false,"Slice":["zero","two","three"],"MapString":{"do":2,"stres":3,"uno":1,"zero":0},"MapInt":{"0":0,"1":1,"2":2}}}
+{"id":"4","_updated":"0001-01-01T00:00:00Z","String":"4","Int":1,"Foo":1.56,"Struct":{"Enabled":true,"Slice":["one","two","three"],"MapString":{"do":2,"stres":3,"uno":1},"MapInt":{"1":1,"2":2}}}

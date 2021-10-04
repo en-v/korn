@@ -8,10 +8,10 @@ import (
 )
 
 func main() {
-	// example #1
-	SingleHolder(2)
-	// example #2
-	MultipleHolders()
+	log.Init(log.ORANGE, "KORN")
+	SingleHolder(1)   // example #1.1
+	SingleHolder(2)   // example #1.2
+	MultipleHolders() // example #2.1
 }
 
 func SingleHolder(storageType int) {
@@ -43,15 +43,19 @@ func SingleHolder(storageType int) {
 	err = engine.Restore()
 	catch(err)
 
-	// capture targets (map or single) and activate kor
-	//targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
-	//err = holder.Capture(targets)
-	catch(err)
 	err = engine.Activate()
 	catch(err)
-	// to modificate targets and look at results
-	log.Trace(holder.Get("1"))
-	modify(holder.Get("1").(*Type))
+
+	first := holder.Get("1")
+	if first == nil {
+		targets := map[string]*Type{"1": new("1"), "2": new("2"), "3": nil, "4": new("4")}
+		err = holder.Capture(targets)
+		catch(err)
+		first = holder.Get("1")
+	}
+	log.Trace(first)
+
+	modify(first.(*Type))
 	//modify(targets["4"])
 	//catch(holder.Remove("2"))
 	//catch(holder.Capture(new("5")))
