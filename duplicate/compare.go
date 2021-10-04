@@ -54,6 +54,9 @@ func (self *Duplicate) compare(diffsOut map[string]*Difference, newSnap *Duplica
 		case reflect.Slice:
 			found = !reflect.DeepEqual(old.Value, new.Value)
 
+		case reflect.Struct:
+			found = !reflect.DeepEqual(old.Value, new.Value)
+
 		default:
 			found = old.Value != new.Value
 		}
@@ -62,8 +65,8 @@ func (self *Duplicate) compare(diffsOut map[string]*Difference, newSnap *Duplica
 			diffsOut[old.Reaction] = &Difference{
 				Reaction: old.Reaction,
 				Name:     fieldName,
-				Previous:      old.Value,
-				Current:      new.Value,
+				Previous: old.Value,
+				Current:  new.Value,
 				Holder:   self.getRoot().holder,
 				Path:     self.GetPath() + "." + fieldName,
 			}

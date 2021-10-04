@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/en-v/korn"
 	"github.com/en-v/korn/event"
 	"github.com/en-v/korn/query"
@@ -133,6 +135,7 @@ func modify(t *Type) {
 	t.Struct.MapInt[0] = 0
 	t.Struct.Slice[0] = "zero"
 	t.Foo = 6.77
+	t.Time = time.Now()
 	err := t.Commit()
 	if err != nil {
 		panic(err)
@@ -146,6 +149,7 @@ type Type struct {
 	String     string `korn:"string-changed"`
 	Int        int    `korn:"int-changed"`
 	Foo        float32
+	Time       time.Time `korn:"time-changed"`
 	Struct     Struct
 }
 
@@ -161,6 +165,7 @@ func new(id string) *Type {
 		String: id,
 		Int:    1,
 		Foo:    1.56,
+		Time:   time.Now(),
 		Struct: Struct{
 			Enabled: true,
 			Slice:   []string{"one", "two", "three"},

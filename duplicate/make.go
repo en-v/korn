@@ -7,7 +7,6 @@ import (
 	"github.com/en-v/korn/core"
 	"github.com/en-v/korn/event"
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/log"
 )
 
 func Make(target inset.InsetInterface, holder string) (*Duplicate, error) {
@@ -41,19 +40,31 @@ func makedoublet(target interface{}, parent *Duplicate, key string) (*Duplicate,
 			if tagexists && tag == "-" {
 				continue
 			}
-			shot.branches[fstruct.Name], err = makedoublet(fvalue.Interface(), shot, fstruct.Name)
-			if err != nil {
-				return nil, err
+
+			if tagedFieldsExist(fstruct.Type) {
+				shot.branches[fstruct.Name], err = makedoublet(fvalue.Interface(), shot, fstruct.Name)
+				if err != nil {
+					return nil, err
+				}
+
+			} else {
+				if tagexists {
+					err = event.IsNotReservedActionName(tag)
+					if err != nil {
+						return nil, err
+					}
+					shot.fields[fstruct.Name] = makeField(&fvalue, tag, true)
+				} else {
+					shot.fields[fstruct.Name] = makeField(&fvalue, "", false)
+				}
 			}
 
 		default:
 			tag, tagexists := fstruct.Tag.Lookup(core.TAG)
-			log.Trace(fstruct.Name)
-			log.Trace(fstruct.Type)
-			log.Trace(fvalue.Kind())
 
 			if tagexists {
-				if err = event.IsNotReservedActionName(tag); err != nil {
+				err = event.IsNotReservedActionName(tag)
+				if err != nil {
 					return nil, err
 				}
 				shot.fields[fstruct.Name] = makeField(&fvalue, tag, true)
@@ -64,6 +75,16 @@ func makedoublet(target interface{}, parent *Duplicate, key string) (*Duplicate,
 	}
 
 	return shot, nil
+}
+
+func tagedFieldsExist(t reflect.Type) bool {
+	for f := 0; f < t.NumField(); f++ {
+		_, ok := t.Field(f).Tag.Lookup(core.TAG)
+		if ok {
+			return true
+		}
+	}
+	return false
 }
 
 func makeField(inv *reflect.Value, rname string, observable bool) *Field {
