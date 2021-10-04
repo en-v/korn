@@ -17,7 +17,7 @@ KORN = Keep + Observe + React + eNgine
 
 ### 1. Defining
 Define your own observable structure or structures.\
-Nested structures are allowed.
+Nested structures are allowed so you can feel free and have no nesting level limitations.
 ```go
 type User struct {
     korn.Inset `korn:"-" bson:",inline"` 
@@ -25,15 +25,15 @@ type User struct {
     Enabled bool   `korn:"enabledChanged"`
 }
 ```
-Use **korn.Inset** as embedded part of the root structure. Tags `korn:"-" bson:",inline"` are necessray required.\
-Just copy and paste this line ``korn.Inset `korn:"-" bson:",inline"\`` into each structure you need to use with KORN.\
-If you forget **korn.Inset** or tags then your app will catch a panic.
-Also **korn.Inset** contains **Id** and **Updated** fields.
+Use **korn.Inset** as embedded part of the root structure. Tags `korn:"-" bson:",inline"` are necessray required.
+Just copy and paste this line ``korn.Inset `korn:"-" bson:",inline"`` into each structure you need to use with KORN.
+If you forget **korn.Inset** or tags then your app will catch a panic. 
+If your structure has nested structures, you only need to add **korn.Inset** into the root structure.
+You have to remember that **korn.Inset** contains **Id** and **Updated** fields.
+(**Id** field has BSON-tag "_id" and "string" type. **Updated** field contains the last commit date and time.)
 
-**Id** field has BSON-tag "_id" and "string" type.
-**Updated** field contains the last commit date and time.
-
-*Warning: do NOT add your own Id and Updated fields to your structure. It will cause panic.*\
+*Warning 1: Do NOT add your own Id and Updated fields to your structure. It will cause panic.*\
+*Warning 2: Do NOT change Id and Updated values - it will lead to errors.*\
 Tag `korn` contains an action name that will invoke when the field value changes.
 
 ### 2. Init Korn
