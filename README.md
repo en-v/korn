@@ -7,7 +7,8 @@
 ╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝╚═╝░░╚══╝
 ```
 
-In-memory reactivity database engine which can store and restore data to/from JSON files or MongoDB.\
+The reactive engine and in-memory database.\
+Can store and restore data to/from JSON files or MongoDB.\
 Written in Go for Go.
 ```
 KORN = Keep + Observe + React + eNgine
