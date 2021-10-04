@@ -34,6 +34,7 @@ You have to remember that **korn.Inset** contains **Id** and **Updated** fields.
 
 *Warning 1: Do NOT add your own Id and Updated fields to your structure. It will cause panic.*\
 *Warning 2: Do NOT change Id and Updated values - it will lead to errors.*\
+
 Tag `korn` contains an action name that will invoke when the field value changes.
 
 ### 2. Init Korn
@@ -85,23 +86,25 @@ engine.Activate() // activate the engine > reactivity enabling
 ```
 
 ### 5. Perform
-To do something with any one target. Or many :)
+Do something with your data.
 
 ```go
-user := holder.Get("bob").(*User) // getting from the holder and cast to origin type pointer
-user.Name = "Bob Smith" // do something
+user := holder.Get("bob").(*User) // get from the holder and cast to origin type pointer
+user.Name = "Bob Smith" // do something...
 ...
-user.Enabled = false // do something else
-user.Commit() // required for reactivity magic and storing :-)
+user.Enabled = false // do something else...
+user.Commit() 
 ```
 `Commit()` method is needed to cause reactions and save the changes.
 Also you can catch errors from reactions.
+
 ```go
 err := user.Commit() 
 if err != nil {
     panic(err)
 }
 ```
+
 For your enjoyment you can make a wrapper for the holder and it provides your type casting easy. \
 As well all package methods return an error value and your code will stay clean ever :)
 
