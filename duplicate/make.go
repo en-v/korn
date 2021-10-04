@@ -82,6 +82,7 @@ func makeField(inv *reflect.Value, rname string, observable bool) *Field {
 
 	default:
 		log.Trace(rname)
+		log.Trace(inv)
 		outv = inv.Interface()
 	}
 
