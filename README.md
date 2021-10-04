@@ -20,16 +20,19 @@ Define your own observable structure or structures.\
 Nested structures are allowed.
 ```go
 type User struct {
-    korn.Inset `korn:"-" bson:",inline"`
+    korn.Inset `korn:"-" bson:",inline"` 
     Name    string `korn:"nameChanged"`
     Enabled bool   `korn:"enabledChanged"`
 }
 ```
-Use **korn.Inset** as embedded part of the root structure. Tags `korn:"-" bson:",inline"` are required.\
-If you forget **korn.Inset** or tags then your app will catch a panic.\
-Also **korn.Inset** contains **Id** and **Updated** fields.\
-**Id** field has BSON-tag "_id" and "string" type.\ 
-**Updated** field contains the last commit date and time.\
+Use **korn.Inset** as embedded part of the root structure. Tags `korn:"-" bson:",inline"` are necessray required.\
+Just copy and paste this line ``korn.Inset `korn:"-" bson:",inline"\`` into each structure you need to use with KORN.\
+If you forget **korn.Inset** or tags then your app will catch a panic.
+Also **korn.Inset** contains **Id** and **Updated** fields.
+
+**Id** field has BSON-tag "_id" and "string" type.
+**Updated** field contains the last commit date and time.
+
 *Warning: do NOT add your own Id and Updated fields to your structure. It will cause panic.*\
 Tag `korn` contains an action name that will invoke when the field value changes.
 
