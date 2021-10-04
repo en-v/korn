@@ -5,6 +5,7 @@ import (
 
 	"github.com/en-v/korn/holder"
 	"github.com/en-v/korn/storage"
+	"github.com/en-v/log"
 	"github.com/pkg/errors"
 )
 
@@ -66,11 +67,13 @@ func (self *_Engine) Activate() error {
 		return errors.New("No holders found")
 	}
 
-	for name, obs := range self.holders {
-		err := obs.Activate()
+	for name, holder := range self.holders {
+		err := holder.Activate()
 		if err != nil {
 			go self.Shutdown()
 			return errors.Wrap(err, fmt.Sprintf("holder('%s').Activation", name))
+		} else {
+			log.Debugw("Holder activated", "Name", name)
 		}
 	}
 	return nil
