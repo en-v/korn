@@ -7,7 +7,6 @@ import (
 	"github.com/en-v/korn/core"
 	"github.com/en-v/korn/event"
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/log"
 )
 
 func Make(target inset.InsetInterface, holder string) (*Duplicate, error) {
@@ -110,7 +109,6 @@ func makeField(inv *reflect.Value, rname string, observable bool) *Field {
 		outv = slice
 
 	default:
-		log.Trace(inv)
 		outv = inv.Interface()
 	}
 
