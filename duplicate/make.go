@@ -48,6 +48,7 @@ func makedoublet(target interface{}, parent *Duplicate, key string) (*Duplicate,
 
 		default:
 			tag, tagexists := fstruct.Tag.Lookup(core.TAG)
+			log.Trace(fstruct.Name)
 			if tagexists {
 				if err = event.IsNotReservedActionName(tag); err != nil {
 					return nil, err
@@ -81,8 +82,6 @@ func makeField(inv *reflect.Value, rname string, observable bool) *Field {
 		outv = slice
 
 	default:
-		log.Trace(rname)
-		log.Trace(inv)
 		outv = inv.Interface()
 	}
 
