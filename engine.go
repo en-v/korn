@@ -19,8 +19,8 @@ type IEngine interface {
 	//As weel ypu have to set reference object (struct empty instance, not pointer)
 	Holder(string, interface{}) (holder.IHolder, error)
 	//Connect - connect to storage (JSON-files or MongoDB)
-	//1st param - name, 2nd param - path or connection string, 3nd param - model example
-	Connect(string, string) error
+	//path or connection string
+	Connect(string) error
 	//Restore - restore data from storage into memory
 	Restore() error
 	//Reset - reset all data from storage and memory
@@ -89,8 +89,8 @@ func (self *_Engine) Shutdown() {
 	}
 }
 
-func (self *_Engine) Connect(storageName string, connectionString string) error {
-	new, err := storage.Make(storageName, connectionString)
+func (self *_Engine) Connect(connectionString string) error {
+	new, err := storage.Make(self.name, connectionString)
 	if err != nil {
 		return errors.Wrap(err, "Connect to the storage")
 	}

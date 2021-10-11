@@ -19,7 +19,7 @@ func main() {
 func SingleHolder(storageType int) {
 
 	// create engine kit (engine and holder holder), also you can use "New" for an empty engine create
-	engine := korn.Engine("demo")
+	engine := korn.Engine("korn-test")
 	holder, err := engine.Holder("single", Type{})
 	catch(err)
 
@@ -36,9 +36,9 @@ func SingleHolder(storageType int) {
 	// use storages
 	switch storageType {
 	case 1:
-		err = engine.Connect("demo", "")
+		err = engine.Connect("")
 	case 2:
-		err = engine.Connect("korn_mongo_demo", "mongodb://localhost")
+		err = engine.Connect("mongodb://localhost")
 	}
 	catch(err)
 
