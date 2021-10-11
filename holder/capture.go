@@ -50,13 +50,16 @@ func (self *_Holder) captureStruct(value reflect.Value) (err error) {
 	self.duplicates[ins.GetId()], err = duplicate.Make(ins, self.name)
 
 	if self.activated && self.reactions.OnAdd != nil {
-		self.reactions.OnAdd(&event.Event{
+		err = self.reactions.OnAdd(&event.Event{
 			Id:     id,
 			Origin: self.origins[id],
 			Name:   "*",
 			Kind:   event.KIND_ADD,
 			Holder: self.name,
 		})
+		if err != nil {
+			return errors.Wrap(err, "Capture Struct, Dump, Id = "+ins.GetId())
+		}
 	}
 
 	if err != nil {
@@ -105,13 +108,16 @@ func (self *_Holder) captureMap(mapValue reflect.Value) (err error) {
 			}
 
 			if self.activated && self.reactions.OnAdd != nil {
-				self.reactions.OnAdd(&event.Event{
+				err = self.reactions.OnAdd(&event.Event{
 					Id:     id,
 					Origin: mapValue.Interface(),
 					Name:   event.KIND_ADD,
 					Kind:   event.KIND_ADD,
 					Holder: self.name,
 				})
+				if err != nil {
+					return errors.Wrap(err, "Capture Map, Id = "+ins.GetId())
+				}
 			}
 		}
 	}

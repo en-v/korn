@@ -55,8 +55,10 @@ func (self *_Holder) BindBasic(add event.Handler, remove event.Handler, update e
 }
 
 func (self *_Holder) Activate() error {
-	if self.reactions.OnAdd == nil || self.reactions.OnRemove == nil || self.reactions.OnUpdate == nil {
-		str := fmt.Sprintf("add %t, remove %t, update %t", self.reactions.OnAdd == nil, self.reactions.OnRemove == nil, self.reactions.OnUpdate == nil)
+	add, remove, update := self.reactions.OnAdd == nil, self.reactions.OnRemove == nil, self.reactions.OnUpdate == nil
+	
+	if add || remove || update {
+		str := fmt.Sprintf("add %t, remove %t, update %t", add, remove, update)
 		return errors.New("No requred reactions found (method is nil: " + str + "), you have to add requred reactions")
 	}
 

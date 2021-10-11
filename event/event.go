@@ -22,7 +22,7 @@ type Event struct {
 	Path     string
 }
 
-type Handler func(*Event)
+type Handler func(*Event) error
 
 func IsNotReservedActionName(name string) error {
 	if name == KIND_ADD || name == KIND_REMOVE || name == KIND_UPDATE {

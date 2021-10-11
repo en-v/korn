@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"time"
 
 	"github.com/en-v/korn"
@@ -24,9 +25,10 @@ func SingleHolder(storageType int) {
 	catch(err)
 
 	// adding handlers to the holder
-	holder.BindBasic(universalHandler, universalHandler, universalHandler)
+	holder.BindBasic(universalHandler, universalHandler, updateHandler)
 	holder.Bind("string-changed", universalHandler)
 	holder.Bind("int-changed", universalHandler)
+	holder.Bind("time-changed", errorHandler)
 	holder.Bind("struct-enabled-changed", universalHandler)
 	holder.Bind("struct-slice-changed", universalHandler)
 	holder.Bind("struct-map-string-changed", universalHandler)
@@ -72,10 +74,16 @@ func SingleHolder(storageType int) {
 
 	one := holder.Get("1").(*Type)
 	one.String = "IT WORKS"
-	one.Commit()
+	err = one.Commit()
+	if err != nil {
+		log.Error(err)
+	}
 
 	one.String = "IT WORKS AGAIN!"
-	one.Commit()
+	err = one.Commit()
+	if err != nil {
+		log.Error(err)
+	}
 
 	log.Debug(res)
 }
@@ -89,8 +97,10 @@ func MultipleHolders() {
 	second, err := engine.Holder("second", Type{})
 	catch(err)
 	// adding handlers to the holder
-	first.BindBasic(universalHandler, universalHandler, universalHandler)
+	first.BindBasic(universalHandler, universalHandler, updateHandler)
+	first.Bind("string-changed", universalHandler)
 	first.Bind("int-changed", universalHandler)
+	first.Bind("time-changed", universalHandler)
 	first.Bind("struct-enabled-changed", universalHandler)
 	first.Bind("struct-slice-changed", universalHandler)
 	first.Bind("struct-map-string-changed", universalHandler)
@@ -99,6 +109,11 @@ func MultipleHolders() {
 	second.BindBasic(universalHandler, universalHandler, universalHandler)
 	second.Bind("string-changed", universalHandler)
 	second.Bind("int-changed", universalHandler)
+	second.Bind("time-changed", universalHandler)
+	second.Bind("struct-enabled-changed", universalHandler)
+	second.Bind("struct-slice-changed", universalHandler)
+	second.Bind("struct-map-string-changed", universalHandler)
+	second.Bind("struct-map-int-changed", universalHandler)
 
 	// capture targets (map or single) and activate kor
 	catch(first.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
@@ -119,12 +134,18 @@ func catch(err error) {
 	}
 }
 
-func universalHandler(event *event.Event) {
+func universalHandler(event *event.Event) error {
 	log.Debugw(string(event.Kind), "Field", event.Name, "Old", event.Previous, "New", event.Current, "holder", event.Holder, "Path", event.Path)
+	return nil
 }
 
-func updateHandler(event *event.Event) {
+func updateHandler(event *event.Event) error {
 	log.Trace(string(event.Kind), "Origin", event.Origin)
+	return nil
+}
+
+func errorHandler(event *event.Event) error {
+	return errors.New("ERROR HANDLER, " + event.Name)
 }
 
 func modify(t *Type) {
@@ -138,7 +159,7 @@ func modify(t *Type) {
 	t.Time = time.Now()
 	err := t.Commit()
 	if err != nil {
-		panic(err)
+		log.Error(err)
 	}
 }
 

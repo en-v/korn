@@ -19,18 +19,21 @@ func (self *_Holder) Remove(id string) error {
 		return errors.New("Elements with current key is not found, key = " + id)
 	}
 
+	delete(self.duplicates, id)
+	delete(self.origins, id)
+
 	if self.activated && self.reactions.OnRemove != nil {
-		self.reactions.OnRemove(&event.Event{
+		err := self.reactions.OnRemove(&event.Event{
 			Id:     id,
 			Origin: origin,
 			Name:   event.KIND_REMOVE,
 			Kind:   event.KIND_REMOVE,
 			Holder: self.name,
 		})
+		if err != nil {
+			return errors.Wrap(err, "Remove")
+		}
 	}
-
-	delete(self.duplicates, id)
-	delete(self.origins, id)
 
 	if self.storage != nil {
 		err := self.storage.Remove(self.name, id)

@@ -16,13 +16,16 @@ func (self *_Holder) compare(shot *duplicate.Duplicate, target inset.InsetInterf
 
 	if shot.HasDifferences() {
 		if self.activated && self.reactions.OnUpdate != nil {
-			self.reactions.OnUpdate(&event.Event{
+			err = self.reactions.OnUpdate(&event.Event{
 				Id:     target.GetId(),
 				Origin: target,
 				Name:   event.KIND_UPDATE,
 				Kind:   event.KIND_UPDATE,
 				Holder: self.name,
 			})
+			if err != nil {
+				return errors.Wrap(err, "compare-onUpdate, "+shot.Name())
+			}
 		}
 
 		for {
@@ -33,11 +36,10 @@ func (self *_Holder) compare(shot *duplicate.Duplicate, target inset.InsetInterf
 
 			reaction, err := self.reactions.get(diff.Reaction)
 			if err != nil {
-				self.catchError(err)
-				continue
+				return err
 			}
 
-			reaction.Handler(&event.Event{
+			err = reaction.Handler(&event.Event{
 				Origin:   target,
 				Name:     diff.Name,
 				Previous: diff.Previous,
@@ -47,6 +49,9 @@ func (self *_Holder) compare(shot *duplicate.Duplicate, target inset.InsetInterf
 				Id:       target.GetId(),
 				Kind:     event.KIND_UPDATE,
 			})
+			if err != nil {
+				return errors.Wrap(err, "Compare.Handler."+diff.Name)
+			}
 		}
 	}
 	return nil

@@ -8,6 +8,7 @@ func Engine(name string) IEngine {
 }
 
 func EmptyHandler() event.Handler {
-	return func(event *event.Event) {
+	return func(event *event.Event) error {
+		return nil
 	}
 }

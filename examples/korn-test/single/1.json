@@ -1,1 +1,1 @@
-{"id":"1","_updated":"2021-10-11T20:08:50.102983+03:00","String":"IT WORKS AGAIN!","Int":2,"Foo":6.77,"Time":"2021-10-11T20:08:50.102553+03:00","Struct":{"Enabled":false,"Slice":["zero","two","three"],"MapString":{"do":2,"stres":3,"uno":1,"zero":0},"MapInt":{"0":0,"1":1,"2":2}}}
+{"id":"1","_updated":"2021-10-11T22:07:44.08855+03:00","String":"IT WORKS AGAIN!","Int":2,"Foo":6.77,"Time":"2021-10-11T22:07:44.08803+03:00","Struct":{"Enabled":false,"Slice":["zero","two","three"],"MapString":{"do":2,"stres":3,"uno":1,"zero":0},"MapInt":{"0":0,"1":1,"2":2}}}
