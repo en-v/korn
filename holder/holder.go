@@ -60,10 +60,6 @@ func (self *_Holder) Activate() error {
 		return errors.New("No requred reactions found (method is nil: " + str + "), you have to add requred reactions")
 	}
 
-	if len(self.reactions.Items) == 0 {
-		return errors.New("No regualr rections found")
-	}
-
 	self.activated = true
 	return nil
 }
