@@ -66,21 +66,18 @@ func (self *_Engine) Activate() error {
 	if len(self.holders) == 0 {
 		return errors.New("No holders found")
 	}
-	log.Trace("1")
+
 	for name, holder := range self.holders {
-		log.Trace(name)
+
 		err := holder.Activate()
-		log.Trace("3")
 		if err != nil {
-			log.Trace(err)
 			go self.Shutdown()
-			log.Trace(err)
 			return errors.Wrap(err, fmt.Sprintf("holder('%s').Activation", name))
+
 		} else {
 			log.Debugw("Holder activated", "Name", name)
 		}
 	}
-	log.Trace("2")
 	return nil
 }
 
