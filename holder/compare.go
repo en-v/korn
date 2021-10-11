@@ -14,27 +14,40 @@ func (self *_Holder) compare(shot *duplicate.Duplicate, target inset.InsetInterf
 		return errors.Wrap(err, shot.Name())
 	}
 
-	for {
-		diff := shot.NextDifference()
-		if diff == nil {
-			return nil
+	if shot.HasDifferences() {
+		if self.activated && self.reactions.OnUpdate != nil {
+			self.reactions.OnUpdate(&event.Event{
+				Id:     target.GetId(),
+				Origin: target,
+				Name:   event.KIND_UPDATE,
+				Kind:   event.KIND_UPDATE,
+				Holder: self.name,
+			})
 		}
 
-		reaction, err := self.reactions.get(diff.Reaction)
-		if err != nil {
-			self.catchError(err)
-			continue
-		}
+		for {
+			diff := shot.NextDifference()
+			if diff == nil {
+				return nil
+			}
 
-		reaction.Handler(&event.Event{
-			Origin:   target,
-			Name:     diff.Name,
-			Previous: diff.Previous,
-			Current:  diff.Current,
-			Holder:   diff.Holder,
-			Path:     diff.Path,
-			Id:       target.GetId(),
-			Kind:     event.KIND_CHANGE,
-		})
+			reaction, err := self.reactions.get(diff.Reaction)
+			if err != nil {
+				self.catchError(err)
+				continue
+			}
+
+			reaction.Handler(&event.Event{
+				Origin:   target,
+				Name:     diff.Name,
+				Previous: diff.Previous,
+				Current:  diff.Current,
+				Holder:   diff.Holder,
+				Path:     diff.Path,
+				Id:       target.GetId(),
+				Kind:     event.KIND_UPDATE,
+			})
+		}
 	}
+	return nil
 }

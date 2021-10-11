@@ -25,8 +25,8 @@ type Field struct {
 type Difference struct {
 	Reaction string
 	Name     string
-	Previous      interface{}
-	Current      interface{}
+	Previous interface{}
+	Current  interface{}
 	Holder   string
 	Path     string
 }
@@ -49,13 +49,17 @@ func (self *Duplicate) ToString() string {
 	return string(b)
 }
 
+func (self *Duplicate) HasDifferences() bool {
+	return len(self.diffs) > 0
+}
+
 func (self *Duplicate) NextDifference() *Difference {
 	for key, diff := range self.diffs {
 		clone := &diff
 		delete(self.diffs, key)
 		return *clone
-
 	}
+
 	return nil
 }
 

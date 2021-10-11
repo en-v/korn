@@ -9,6 +9,7 @@ type Reactions struct {
 	Items    map[string]*Reaction
 	OnAdd    event.Handler
 	OnRemove event.Handler
+	OnUpdate event.Handler
 }
 
 type Reaction struct {
@@ -30,6 +31,9 @@ func (self *Reactions) add(name string, handler event.Handler) {
 
 	case event.KIND_REMOVE:
 		self.OnRemove = handler
+
+	case event.KIND_UPDATE:
+		self.OnUpdate = handler
 
 	default:
 		self.Items[name] = &Reaction{

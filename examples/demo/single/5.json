@@ -1,1 +1,0 @@
-{"id":"5","_updated":"0001-01-01T00:00:00Z","String":"5","Int":1,"Foo":1.56,"Struct":{"Enabled":true,"Slice":["one","two","three"],"MapString":{"do":2,"stres":3,"uno":1},"MapInt":{"1":1,"2":2}}}

@@ -24,8 +24,7 @@ func SingleHolder(storageType int) {
 	catch(err)
 
 	// adding handlers to the holder
-	holder.Bind("add", universalHandler)
-	holder.Bind("remove", universalHandler)
+	holder.BindBasic(universalHandler, universalHandler, universalHandler)
 	holder.Bind("string-changed", universalHandler)
 	holder.Bind("int-changed", universalHandler)
 	holder.Bind("struct-enabled-changed", universalHandler)
@@ -90,17 +89,14 @@ func MultipleHolders() {
 	second, err := engine.Holder("second", Type{})
 	catch(err)
 	// adding handlers to the holder
-	first.Bind("add", universalHandler)
-	first.Bind("remove", universalHandler)
-	first.Bind("string-changed", universalHandler)
+	first.BindBasic(universalHandler, universalHandler, universalHandler)
 	first.Bind("int-changed", universalHandler)
 	first.Bind("struct-enabled-changed", universalHandler)
 	first.Bind("struct-slice-changed", universalHandler)
 	first.Bind("struct-map-string-changed", universalHandler)
 	first.Bind("struct-map-int-changed", universalHandler)
 
-	second.Bind("add", universalHandler)
-	second.Bind("remove", universalHandler)
+	second.BindBasic(universalHandler, universalHandler, universalHandler)
 	second.Bind("string-changed", universalHandler)
 	second.Bind("int-changed", universalHandler)
 
@@ -125,6 +121,10 @@ func catch(err error) {
 
 func universalHandler(event *event.Event) {
 	log.Debugw(string(event.Kind), "Field", event.Name, "Old", event.Previous, "New", event.Current, "holder", event.Holder, "Path", event.Path)
+}
+
+func updateHandler(event *event.Event) {
+	log.Trace(string(event.Kind), "Origin", event.Origin)
 }
 
 func modify(t *Type) {

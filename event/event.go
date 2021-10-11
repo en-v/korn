@@ -7,26 +7,26 @@ type Kind string
 const (
 	KIND_ADD    = "add"
 	KIND_REMOVE = "remove"
-	KIND_CHANGE = "change"
+	KIND_UPDATE = "update"
 )
 
 type Event struct {
-	Id    string
-	Origin interface{} // pointer to origin, always
-	Name   string      // name of changed field
-	Error  error       // an error
-	Kind   Kind        // kind of event: add, remove, change
-	Previous    interface{} // pointer to old value
-	Current    interface{} // pointer to new value
-	Holder string
-	Path   string
+	Id       string
+	Origin   interface{} // pointer to origin, always
+	Name     string      // name of changed field
+	Error    error       // an error
+	Kind     Kind        // kind of event: add, remove, change
+	Previous interface{} // pointer to old value
+	Current  interface{} // pointer to new value
+	Holder   string
+	Path     string
 }
 
 type Handler func(*Event)
 
 func IsNotReservedActionName(name string) error {
-	if name == KIND_ADD || name == KIND_REMOVE {
-		return errors.New("Tags cannot to be: " + KIND_ADD + " or " + KIND_REMOVE)
+	if name == KIND_ADD || name == KIND_REMOVE || name == KIND_UPDATE {
+		return errors.New("Tags cannot to be: " + KIND_ADD + " or " + KIND_REMOVE + " or " + KIND_UPDATE)
 	}
 	return nil
 }

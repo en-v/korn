@@ -1,6 +1,8 @@
 package holder
 
 import (
+	"fmt"
+
 	"github.com/en-v/korn/duplicate"
 	"github.com/en-v/korn/event"
 	"github.com/en-v/korn/storage"
@@ -46,9 +48,16 @@ func (self *_Holder) Bind(name string, handler event.Handler) {
 	self.reactions.add(name, handler)
 }
 
+func (self *_Holder) BindBasic(add event.Handler, remove event.Handler, update event.Handler) {
+	self.Bind(event.KIND_ADD, add)
+	self.Bind(event.KIND_REMOVE, remove)
+	self.Bind(event.KIND_UPDATE, update)
+}
+
 func (self *_Holder) Activate() error {
-	if self.reactions.OnAdd == nil || self.reactions.OnRemove == nil {
-		return errors.New("No requred reactions found ('add' and 'remove'), you have to add requred reactions")
+	if self.reactions.OnAdd == nil || self.reactions.OnRemove == nil || self.reactions.OnUpdate == nil {
+		str := fmt.Sprintf("add %t, remove %t, update %t", self.reactions.OnAdd == nil, self.reactions.OnRemove == nil, self.reactions.OnUpdate == nil)
+		return errors.New("No requred reactions found (method is nil: " + str + "), you have to add requred reactions")
 	}
 
 	if len(self.reactions.Items) == 0 {

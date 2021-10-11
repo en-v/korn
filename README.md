@@ -48,13 +48,24 @@ holder, err := engine.Holder("users", User{})
 
 holder.Bind("add", addHandler) 
 holder.Bind("remove", removeHandler) 
+holder.Bind("update", updateHandler) 
+
 holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requried
 holder.Bind("enabledChanged", enabledChangedHandler)
 ```
-Actions `add` and `remove` must always be defined and bound.
+Basic actions `add` and `remove` and `update` must always be defined and bound.
 You can use more than one holder.\ 
 Holders count is unlimited but you have to remember that name of the holder must be unique.\
 If you have many types of data then your scenario is "one holder per one type".
+
+You can bind basic actions with single method:
+```go 
+holder.BindBasic(addHandler, removeHandler, updateHandler)
+```
+If you don't want to bind basic method you should use an empty handler:
+```go 
+holder.BindBasic(addHandler, removeHandler, korn.EmptyHandler())
+```
 
 ### 3. Don't forget about data storing
 Add one of two kinds storage if you need it. The storage using is optional.\
@@ -62,12 +73,12 @@ You can use NO data storage then your data will be lost after your app close (it
 
 **JSF** - storage based on simle JSON files (one file per object):
 ```go
-engine.Connect("demo", "") 
+engine.Connect("") 
 engine.Restore() 
 ```
 **MDB** - MongoDB storage:
 ```go
-engine.Connect("korn_mongo_demo", "mongodb://localhost") 
+engine.Connect("mongodb://localhost") 
 engine.Restore() 
 ```
 Call the `Restore()` method if you need to restore the last saved data from the storage.
