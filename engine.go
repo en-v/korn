@@ -72,6 +72,7 @@ func (self *_Engine) Activate() error {
 		err := holder.Activate()
 		log.Trace("3")
 		if err != nil {
+			log.Trace(err)
 			go self.Shutdown()
 			return errors.Wrap(err, fmt.Sprintf("holder('%s').Activation", name))
 		} else {
