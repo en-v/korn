@@ -74,6 +74,7 @@ func (self *_Engine) Activate() error {
 		if err != nil {
 			log.Trace(err)
 			go self.Shutdown()
+			log.Trace(err)
 			return errors.Wrap(err, fmt.Sprintf("holder('%s').Activation", name))
 		} else {
 			log.Debugw("Holder activated", "Name", name)
@@ -84,8 +85,8 @@ func (self *_Engine) Activate() error {
 }
 
 func (self *_Engine) Shutdown() {
-	for _, obs := range self.holders {
-		obs.Shutdown()
+	for _, holder := range self.holders {
+		holder.Shutdown()
 	}
 
 	if self.storage != nil {
