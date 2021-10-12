@@ -1,6 +1,8 @@
 package holder
 
 import (
+	"strconv"
+
 	"github.com/en-v/korn/event"
 	"github.com/pkg/errors"
 )
@@ -11,6 +13,18 @@ func (self *_Holder) Get(key string) interface{} {
 		return origin
 	}
 	return nil
+}
+
+func (self *_Holder) Single() (interface{}, error) {
+	if len(self.origins) != 1 {
+		return nil, errors.New("Origins count not 1, current = " + strconv.Itoa(len(self.origins)))
+	}
+
+	for origin := range self.origins {
+		return origin, nil
+	}
+
+	return nil, errors.New("Something went wrong, origins count =  " + strconv.Itoa(len(self.origins)))
 }
 
 func (self *_Holder) Remove(id string) error {

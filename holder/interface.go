@@ -16,6 +16,10 @@ type IHolder interface {
 	//The target is an object which provide an intefcae "types.Target".
 	Get(string) interface{}
 
+	//Single - get single target from holder.
+	//If targets count not equal 1 return error
+	Single() (interface{}, error)
+
 	//All - return all contained and abservable targets.
 	//The target is an object which provide an intefcae "types.Target".
 	All() map[string]interface{}
