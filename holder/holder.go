@@ -90,6 +90,7 @@ func (self *_Holder) Reset() error {
 	self.origins = make(map[string]interface{})
 	self.duplicates = make(map[string]*duplicate.Duplicate)
 	if self.storage != nil {
-		self.storage.Reset()
+		return self.storage.Reset()
 	}
+	return nil
 }
