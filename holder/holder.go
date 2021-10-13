@@ -56,7 +56,7 @@ func (self *_Holder) BindBasic(add event.Handler, remove event.Handler, update e
 
 func (self *_Holder) Activate() error {
 	add, remove, update := self.reactions.OnAdd == nil, self.reactions.OnRemove == nil, self.reactions.OnUpdate == nil
-	
+
 	if add || remove || update {
 		str := fmt.Sprintf("add %t, remove %t, update %t", add, remove, update)
 		return errors.New("No requred reactions found (method is nil: " + str + "), you have to add requred reactions")
@@ -87,5 +87,9 @@ func (self *_Holder) Count() int {
 }
 
 func (self *_Holder) Reset() error {
-	panic("Method not implememted")
+	self.origins = make(map[string]interface{})
+	self.duplicates = make(map[string]*duplicate.Duplicate)
+	if self.storage != nil {
+		self.storage.Reset()
+	}
 }

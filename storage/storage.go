@@ -23,6 +23,8 @@ type IStorage interface {
 	Restore(string, reflect.Type) (map[string]interface{}, error)
 	//Remove - remove an object from holder by id
 	Remove(string, string) error
+	//Reset - remove from objects and delete all data
+	Reset() error
 }
 
 func Make(name string, param string) (IStorage, error) {
