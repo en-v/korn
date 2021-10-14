@@ -4,7 +4,6 @@ import (
 	"reflect"
 
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/log"
 )
 
 func (self *Duplicate) Compare(target inset.InsetInterface) error {
@@ -29,9 +28,9 @@ func (self *Duplicate) Compare(target inset.InsetInterface) error {
 
 	self.branches = new.branches
 	self.fields = new.fields
-	if len(self.diffs) > 0 {
+	/*if len(self.diffs) > 0 {
 		log.Debug(self.id, "Differents found", self.diffs)
-	}
+	}*/
 	return nil
 }
 
