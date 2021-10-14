@@ -7,17 +7,19 @@ import (
 	"strings"
 
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/log"
 	"github.com/pkg/errors"
 )
 
 func (self *JFS) Restore(folder string, reft reflect.Type) (map[string]interface{}, error) {
 	path := self.path + "/" + folder
+
 	list, err := ioutil.ReadDir(path)
 	if err != nil {
 		return nil, errors.Wrap(err, "JFS Restore")
 	}
+
 	res := make(map[string]interface{}, len(list))
+
 	for _, f := range list {
 
 		if !strings.Contains(f.Name(), FILE_EXTENSION) {
@@ -32,16 +34,17 @@ func (self *JFS) Restore(folder string, reft reflect.Type) (map[string]interface
 		}
 
 		item := reflect.New(reft).Interface()
+
 		err = json.Unmarshal(data, item)
 		if err != nil {
 			return nil, errors.Wrap(err, "JSF Restore")
 		}
+
 		iset, cast := item.(inset.InsetInterface)
 		if !cast {
 			return nil, errors.New("Restored object cant to be casted to InsetInterface")
 		}
 		res[iset.GetId()] = iset
-		log.Trace(iset)
 	}
 	return res, nil
 }

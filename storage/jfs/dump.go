@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/en-v/korn/inset"
-	"github.com/en-v/log"
 	"github.com/pkg/errors"
 )
 
@@ -13,7 +12,7 @@ func (self *JFS) Dump(holderName string, obj inset.InsetInterface) error {
 
 	filename := self.fullFileName(holderName, obj.GetId())
 
-	d, err := json.Marshal(obj)
+	data, err := json.Marshal(obj)
 	if err != nil {
 		return errors.Wrap(err, "Marshalling before Dump")
 	}
@@ -26,10 +25,10 @@ func (self *JFS) Dump(holderName string, obj inset.InsetInterface) error {
 		}
 	}
 
-	err = os.WriteFile(filename, d, 0777)
+	err = os.WriteFile(filename, data, 0777)
 	if err != nil {
 		return errors.Wrap(err, "Dump to file")
 	}
-	log.Trace(string(d))
+
 	return nil
 }
