@@ -6,6 +6,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+const FILE_EXTENSION = ".json"
+
 //JFS - JSON Files Storage
 type JFS struct {
 	ready bool
@@ -39,7 +41,7 @@ func (self *JFS) IsReady() bool {
 }
 
 func (self *JFS) fullFileName(holder string, id string) string {
-	return self.path + "/" + holder + "/" + id + ".json"
+	return self.path + "/" + holder + "/" + id + FILE_EXTENSION
 }
 
 func (self *JFS) Prepare(holderName string) error {
