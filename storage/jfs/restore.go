@@ -25,7 +25,6 @@ func (self *JFS) Restore(folder string, reft reflect.Type) (map[string]interface
 		}
 
 		filePath := path + "/" + f.Name()
-		log.Trace(filePath)
 
 		data, err := ioutil.ReadFile(filePath)
 		if err != nil {

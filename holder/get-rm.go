@@ -20,7 +20,7 @@ func (self *_Holder) Single() (interface{}, error) {
 		return nil, errors.New("Origins count not 1, current = " + strconv.Itoa(len(self.origins)))
 	}
 
-	for origin := range self.origins {
+	for _, origin := range self.origins {
 		return origin, nil
 	}
 
