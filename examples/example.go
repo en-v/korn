@@ -33,6 +33,7 @@ func SingleHolder(storageType int) {
 	holder.Bind("struct-slice-changed", universalHandler)
 	holder.Bind("struct-map-string-changed", universalHandler)
 	holder.Bind("struct-map-int-changed", universalHandler)
+	catch(holder.CheckBindings())
 
 	// use storages
 	switch storageType {
@@ -105,6 +106,7 @@ func MultipleHolders() {
 	first.Bind("struct-slice-changed", universalHandler)
 	first.Bind("struct-map-string-changed", universalHandler)
 	first.Bind("struct-map-int-changed", universalHandler)
+	catch(first.CheckBindings())
 
 	second.BindBasic(universalHandler, universalHandler, universalHandler)
 	second.Bind("string-changed", universalHandler)
@@ -114,6 +116,7 @@ func MultipleHolders() {
 	second.Bind("struct-slice-changed", universalHandler)
 	second.Bind("struct-map-string-changed", universalHandler)
 	second.Bind("struct-map-int-changed", universalHandler)
+	catch(second.CheckBindings())
 
 	// capture targets (map or single) and activate kor
 	catch(first.Capture(map[string]*Type{"1": new("1"), "2": new("2"), "3": nil}))
@@ -155,7 +158,7 @@ func modify(t *Type) {
 	t.Struct.MapString["zero"] = 0
 	t.Struct.MapInt[0] = 0
 	t.Struct.Slice[0] = "zero"
-	t.Foo = 6.77
+
 	t.Time = time.Now()
 	err := t.Commit()
 	if err != nil {
@@ -169,9 +172,10 @@ type Type struct {
 	korn.Inset `korn:"-" bson:",inline"`
 	String     string `korn:"string-changed"`
 	Int        int    `korn:"int-changed"`
-	Foo        float32
-	Time       time.Time `korn:"time-changed"`
-	Struct     Struct
+	//Foo        float32   `korn:"foo-unbound"`
+	//Bar        float32   `korn:"bar-unbound"`
+	Time   time.Time `korn:"time-changed"`
+	Struct Struct
 }
 
 type Struct struct {
@@ -185,7 +189,6 @@ func new(id string) *Type {
 	t := &Type{
 		String: id,
 		Int:    1,
-		Foo:    1.56,
 		Time:   time.Now(),
 		Struct: Struct{
 			Enabled: true,

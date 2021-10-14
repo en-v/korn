@@ -35,6 +35,8 @@ type IHolder interface {
 	//Make a panic if the handlir is empty (nil)
 	Bind(string, event.Handler)
 
+	CheckBindings() error
+
 	//BindBasic - add reqired event handlers - add, remove, update
 	BindBasic(add event.Handler, remove event.Handler, update event.Handler)
 

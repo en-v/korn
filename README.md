@@ -52,6 +52,7 @@ holder.Bind("update", updateHandler)
 
 holder.Bind("nameChanged", nameChangedHandler) // one regular event minimum requried
 holder.Bind("enabledChanged", enabledChangedHandler)
+err = holder.CheckBindings()
 ```
 Basic actions `add` and `remove` and `update` must always be defined and bound.
 You can use more than one holder.\ 
