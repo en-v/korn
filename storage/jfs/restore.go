@@ -12,7 +12,7 @@ import (
 )
 
 func (self *JFS) Restore(folder string, reft reflect.Type) (map[string]interface{}, error) {
-	path := self.path + "/" + folder + "/"
+	path := self.path + "/" + folder
 	list, err := ioutil.ReadDir(path)
 	if err != nil {
 		return nil, errors.Wrap(err, "JFS Restore")
@@ -41,8 +41,8 @@ func (self *JFS) Restore(folder string, reft reflect.Type) (map[string]interface
 		if !cast {
 			return nil, errors.New("Restored object cant to be casted to InsetInterface")
 		}
-		res[iset.GetId()] = item
-		log.Trace(iset.GetId())
+		res[iset.GetId()] = iset
+		log.Trace(iset)
 	}
 	return res, nil
 }
