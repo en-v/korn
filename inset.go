@@ -15,6 +15,9 @@ type Inset struct {
 }
 
 func (self *Inset) Commit() error {
+	if self.Id == "" {
+		return errors.New("Id can't to be empty")
+	}
 
 	self.Updated = time.Now()
 
