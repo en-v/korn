@@ -16,8 +16,10 @@ func (self *_Holder) Capture(t interface{}) error {
 	switch value.Kind() {
 	case reflect.Struct:
 		return self.captureStruct(value)
+
 	case reflect.Ptr:
 		return self.captureStruct(value)
+
 	case reflect.Map:
 		return self.captureMap(value)
 
@@ -56,6 +58,7 @@ func (self *_Holder) captureStruct(value reflect.Value) (err error) {
 			Name:   "*",
 			Kind:   event.KIND_ADD,
 			Holder: self.name,
+			Extra:  self.extra,
 		})
 		if err != nil {
 			return errors.Wrap(err, "Capture Struct, Dump, Id = "+ins.GetId())
@@ -114,6 +117,7 @@ func (self *_Holder) captureMap(mapValue reflect.Value) (err error) {
 					Name:   event.KIND_ADD,
 					Kind:   event.KIND_ADD,
 					Holder: self.name,
+					Extra:  self.extra,
 				})
 				if err != nil {
 					return errors.Wrap(err, "Capture Map, Id = "+ins.GetId())

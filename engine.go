@@ -25,10 +25,13 @@ type IEngine interface {
 	Restore() error
 	//Reset - reset all data from storage and memory
 	Reset() error
+	//Extra - capture extra object
+	Extra(interface{})
 }
 
 type _Engine struct {
 	name    string
+	extra   interface{}
 	storage storage.IStorage
 	holders map[string]holder.IHolder
 }
@@ -41,9 +44,9 @@ func makeEngine(name string) *_Engine {
 }
 
 func (self *_Engine) Holder(name string, referenceObjectNotPointer interface{}) (holder.IHolder, error) {
-	obs, exists := self.holders[name]
+	e, exists := self.holders[name]
 	if exists {
-		return obs, nil
+		return e, nil
 	}
 
 	new, err := holder.Make(name, referenceObjectNotPointer)
@@ -58,8 +61,16 @@ func (self *_Engine) Holder(name string, referenceObjectNotPointer interface{}) 
 		}
 	}
 
+	if self.extra != nil {
+		new.SetExtra(self.extra)
+	}
+
 	self.holders[name] = new
 	return self.holders[name], nil
+}
+
+func (self *_Engine) Extra(extra interface{}) {
+	self.extra = extra
 }
 
 func (self *_Engine) Activate() error {

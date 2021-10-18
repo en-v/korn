@@ -16,7 +16,7 @@ func (self *MDB) Dump(collectionName string, obj inset.InsetInterface) error {
 
 	res, err := col.UpdateByID(context.TODO(), obj.GetId(), bson.D{{"$set", obj}})
 	if err != nil {
-		return errors.Wrap(err, "Update By ID")
+		return errors.Wrap(err, "Update By Id")
 	}
 
 	if res.MatchedCount == 0 {

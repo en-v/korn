@@ -16,6 +16,7 @@ type _Holder struct {
 	name       string
 	reactions  *Reactions
 	ref        *Reference
+	extra      interface{}
 	origins    map[string]interface{}
 	duplicates map[string]*duplicate.Duplicate
 	errch      chan error
@@ -97,6 +98,10 @@ func (self *_Holder) Activate() error {
 
 	self.activated = true
 	return nil
+}
+
+func (self *_Holder) SetExtra(extra interface{}) {
+	self.extra = extra
 }
 
 func (self *_Holder) Shutdown() {

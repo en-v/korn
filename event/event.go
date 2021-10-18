@@ -20,6 +20,7 @@ type Event struct {
 	Current  interface{} // pointer to new value
 	Holder   string
 	Path     string
+	Extra    interface{}
 }
 
 type Handler func(*Event) error
@@ -29,4 +30,8 @@ func IsNotReservedActionName(name string) error {
 		return errors.New("Tags cannot to be: " + KIND_ADD + " or " + KIND_REMOVE + " or " + KIND_UPDATE)
 	}
 	return nil
+}
+
+func (event *Event) HasExtra() bool {
+	return event.Extra != nil
 }

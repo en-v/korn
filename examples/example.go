@@ -18,9 +18,10 @@ func main() {
 }
 
 func SingleHolder(storageType int) {
-
+	extra := &Extra{}
 	// create engine kit (engine and holder holder), also you can use "New" for an empty engine create
 	engine := korn.Engine("korn-test")
+	engine.Extra(extra)
 	holder, err := engine.Holder("single", Type{})
 	catch(err)
 
@@ -139,6 +140,10 @@ func catch(err error) {
 
 func universalHandler(event *event.Event) error {
 	log.Debugw(string(event.Kind), "Field", event.Name, "Old", event.Previous, "New", event.Current, "holder", event.Holder, "Path", event.Path)
+	if event.HasExtra() {
+		e := event.Extra.(*Extra)
+		e.Print(event.Id)
+	}
 	return nil
 }
 
@@ -172,8 +177,8 @@ type Type struct {
 	korn.Inset `korn:"-" bson:",inline"`
 	String     string `korn:"string-changed"`
 	Int        int    `korn:"int-changed"`
-	//Foo        float32   `korn:"foo-unbound"`
-	//Bar        float32   `korn:"bar-unbound"`
+	//Foo        float32 `korn:"+"`
+	//Bar        float32   `korn:"+"`
 	Time   time.Time `korn:"time-changed"`
 	Struct Struct
 }
@@ -206,4 +211,13 @@ func new(id string) *Type {
 	}
 	t.SetId(id) // required
 	return t
+}
+
+type Extra struct {
+	Value string
+}
+
+func (e *Extra) Print(v string) {
+	e.Value += v
+	log.Debugw("EXTRA", e.Value)
 }

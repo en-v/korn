@@ -22,6 +22,7 @@ func (self *_Holder) compare(shot *duplicate.Duplicate, target inset.InsetInterf
 				Name:   event.KIND_UPDATE,
 				Kind:   event.KIND_UPDATE,
 				Holder: self.name,
+				Extra:  self.extra,
 			})
 			if err != nil {
 				return errors.Wrap(err, "compare-onUpdate, "+shot.Name())
@@ -48,6 +49,7 @@ func (self *_Holder) compare(shot *duplicate.Duplicate, target inset.InsetInterf
 				Path:     diff.Path,
 				Id:       target.GetId(),
 				Kind:     event.KIND_UPDATE,
+				Extra:    self.extra,
 			})
 			if err != nil {
 				return errors.Wrap(err, "Compare.Handler."+diff.Name)

@@ -43,6 +43,8 @@ type IHolder interface {
 	//SetStore a storage
 	SetStore(storage.IStorage) error
 
+	SetExtra(interface{})
+
 	//Activate - activate the holder
 	//No need to call self method cos the kor will call it
 	Activate() error
